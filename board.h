@@ -1,4 +1,5 @@
-//board h file
+#define MAX_ROWS 8
+#define MAX_COLS 8
 
 typedef struct{
   char board[8][8];
