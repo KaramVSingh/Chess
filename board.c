@@ -34,19 +34,19 @@ board_t *create_board(){
 void draw(board_t * board){
   int i, j;
   char c;
+  printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
   for(i = 0; i < MAX_ROWS; i++){
-    printf("  _ _ _ _ _ _ _ _\n%d",8-i);
     for(j = 0; j < MAX_COLS; j++){
       c = board->board[i][j];
       if(c){
-        printf("|%c",c);
+        printf("| %c ",c);
       }else{
-        printf("| ");
+        printf("|   ");
       }
     }
-    printf("|\n");
+    printf("| %d\n", 8-i);
+    printf("|___|___|___|___|___|___|___|___|\n");
 
   }
-  printf("  _ _ _ _ _ _ _ _\n");
-  printf("  A B C D E F G H\n");
+  printf("  A   B   C   D   E   F   G   H \n");
 }
