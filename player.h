@@ -1,7 +1,11 @@
 //player h file
+#define TRUE 1
+#define FALSE 0
+#define WHITE 1
+#define BLACK 0
 
 typedef struct player_t {
-  int player_type;
+  int is_human;
   //int difficulty; later
   int piece_type;
 } player_t;
