@@ -18,7 +18,7 @@ int main(int argc, char** argv){
     // do something else
   }
   board = create_board();
-  move = 1;
+  play = 1;
   while(play){
     draw(board);
     play = move(player1);
