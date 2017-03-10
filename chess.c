@@ -10,6 +10,8 @@ int main(int argc, char** argv){
 
   player1 = (player_t *) malloc(sizeof(player_t));
   player2 = (player_t *) malloc(sizeof(player_t));
+  board = create_board();
+  draw(board);
   if(argc == 1){
     // full game run
     printf("Enter number of (human) players (0-2): ");
@@ -35,7 +37,6 @@ int main(int argc, char** argv){
   }else{
     // do something else
   }
-  board = create_board();
   play = 1;
   while(play){
     draw(board);
