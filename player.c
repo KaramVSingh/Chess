@@ -1,1 +1,1 @@
-//player and computer can be same?
+#include "player.h"
