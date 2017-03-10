@@ -19,6 +19,8 @@ board_t *create_board(){
     result->white[i+8].col = i;
     result->black[i+8].name = 'p';
     result->black[i+8].col = i;
+    result->white[i+8].val = 0;
+    result->black[i+8].val = 0;
   }
   result->white[0].name = 'K';
   result->white[0].col = 4;
