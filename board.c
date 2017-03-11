@@ -102,7 +102,7 @@ void draw(board_t * board){
     if(!board->white[k].taken) board->board[i][j] = board->white[k].name;
     i = board->black[k].row;
     j = board->black[k].col;
-    if(!board->white[k].taken) board->board[i][j] = board->black[k].name;
+    if(!board->black[k].taken) board->board[i][j] = board->black[k].name;
   }
 
   printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
@@ -389,4 +389,147 @@ int check(board_t *board, int color){
   }
 
   return 0;
+}
+
+int place_piece(board_t *board, char name, int row, int col){
+  int i = 0;
+
+  switch (name) {
+    case 'k':
+      board->black[0].taken = FALSE;
+      board->black[0].row = row;
+      board->black[0].col = col;
+      break;
+    //TODO:should check if piece already taken for these, can use a pawn if need be
+    case 'q':
+      board->black[1].taken = FALSE;
+      board->black[1].row = row;
+      board->black[1].col = col;
+      break;
+    case 'b':
+      if(board->black[2].taken){
+        board->black[2].taken = FALSE;
+        board->black[2].row = row;
+        board->black[2].col = col;
+      }else if(board->black[3].taken){
+        board->black[3].taken = FALSE;
+        board->black[3].row = row;
+        board->black[3].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'n':
+      if(board->black[4].taken){
+        board->black[4].taken = FALSE;
+        board->black[4].row = row;
+        board->black[4].col = col;
+      }else if(board->black[5].taken){
+        board->black[5].taken = FALSE;
+        board->black[5].row = row;
+        board->black[5].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'r':
+      if(board->black[6].taken){
+        board->black[6].taken = FALSE;
+        board->black[6].row = row;
+        board->black[6].col = col;
+      }else if(board->black[7].taken){
+        board->black[7].taken = FALSE;
+        board->black[7].row = row;
+        board->black[7].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'p':
+      while(i < 8 && !board->black[8+i].taken){
+        i++;
+      }
+      if(i < 8){
+        board->black[0].taken = FALSE;
+        board->black[0].row = row;
+        board->black[0].col = col;
+      }else{
+        //no more pawns
+        return 0;
+      }
+      break;
+    case 'K':
+      board->white[0].taken = FALSE;
+      board->white[0].row = row;
+      board->white[0].col = col;
+      break;
+    //TODO:should check if piece already taken for these, can use a pawn if need be
+    case 'Q':
+      board->white[1].taken = FALSE;
+      board->white[1].row = row;
+      board->white[1].col = col;
+      break;
+    case 'B':
+      if(board->white[2].taken){
+        board->white[2].taken = FALSE;
+        board->white[2].row = row;
+        board->white[2].col = col;
+      }else if(board->white[3].taken){
+        board->white[3].taken = FALSE;
+        board->white[3].row = row;
+        board->white[3].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'N':
+      if(board->white[4].taken){
+        board->white[4].taken = FALSE;
+        board->white[4].row = row;
+        board->white[4].col = col;
+      }else if(board->white[5].taken){
+        board->white[5].taken = FALSE;
+        board->white[5].row = row;
+        board->white[5].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'R':
+      if(board->white[6].taken){
+        board->white[6].taken = FALSE;
+        board->white[6].row = row;
+        board->white[6].col = col;
+      }else if(board->white[7].taken){
+        board->white[7].taken = FALSE;
+        board->white[7].row = row;
+        board->white[7].col = col;
+      }else{
+      //replace with pawn stuff
+        return 0;
+      }
+      break;
+    case 'P':
+      while(i < 8 && !board->white[8+i].taken){
+        i++;
+      }
+      if(i < 8){
+        board->white[0].taken = FALSE;
+        board->white[0].row = row;
+        board->white[0].col = col;
+      }else{
+        //no more pawns
+        return 0;
+      }
+      break;
+    default:
+      return 0;
+      break;
+  }
+  return 1;
 }

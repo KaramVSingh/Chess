@@ -27,3 +27,5 @@ void draw(board_t *board);
 
 //might not need this function, but could be handy
 int check(board_t *board, int color);
+
+int place_piece(board_t *board, char name, int row, int col);
