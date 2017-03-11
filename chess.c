@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "board.h"
 #include "player.h"
 
 int main(int argc, char** argv){
@@ -40,9 +39,9 @@ int main(int argc, char** argv){
   play = 1;
   while(play){
     draw(board);
-    play = move(player1);
+    play = move(player1, board);
     if(play){
-      play = move(player2);
+      play = move(player2, board);
     }
   }
 

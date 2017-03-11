@@ -1,3 +1,5 @@
+#include "board.h"
+
 //player h file
 #define TRUE 1
 #define FALSE 0
@@ -17,4 +19,4 @@ be void and the check can be delegated to check, but I think this is better
 because it prevents a move being made by the second player if the first can't
 move
 */
-int move(player_t* player);
+int move(player_t* player, board_t *board);
