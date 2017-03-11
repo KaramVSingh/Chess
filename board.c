@@ -99,10 +99,10 @@ void draw(board_t * board){
   for(k = 0; k < 16; k++){
     i = board->white[k].row;
     j = board->white[k].col;
-    board->board[i][j] = board->white[k].name;
+    if(!board->white[k].taken) board->board[i][j] = board->white[k].name;
     i = board->black[k].row;
     j = board->black[k].col;
-    board->board[i][j] = board->black[k].name;
+    if(!board->white[k].taken) board->board[i][j] = board->black[k].name;
   }
 
   printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
