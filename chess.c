@@ -12,27 +12,27 @@ int main(int argc, char** argv){
   player1 = (player_t *) malloc(sizeof(player_t));
   player2 = (player_t *) malloc(sizeof(player_t));
   board = create_board();
+  draw(board);
+  printf("Enter number of (human) players (0-2): ");
+  scanf("%d", &num_players);
+  if(num_players == 0){
+    player1->is_human = FALSE;
+    player1->piece_type = WHITE;
+    player2->is_human = FALSE;
+    player2->piece_type = BLACK;
+  } else if(num_players == 1){
+    player1->is_human = TRUE;
+    player1->piece_type = WHITE;
+    player2->is_human = FALSE;
+    player2->piece_type = BLACK;
+  }else{
+    player1->is_human = TRUE;
+    player1->piece_type = WHITE;
+    player2->is_human = TRUE;
+    player2->piece_type = BLACK;
+  }
   if(argc == 1){
-    draw(board);
     // full game run
-    printf("Enter number of (human) players (0-2): ");
-    scanf("%d", &num_players);
-    if(num_players == 0){
-      player1->is_human = FALSE;
-      player1->piece_type = WHITE;
-      player2->is_human = FALSE;
-      player2->piece_type = BLACK;
-    } else if(num_players == 1){
-      player1->is_human = TRUE;
-      player1->piece_type = WHITE;
-      player2->is_human = FALSE;
-      player2->piece_type = BLACK;
-    }else{
-      player1->is_human = TRUE;
-      player1->piece_type = WHITE;
-      player2->is_human = TRUE;
-      player2->piece_type = BLACK;
-    }
   }else if(argc == 2){
     if(strcmp(argv[1], "-p") == 0){
       for(i = 0; i < 16; i++){
@@ -41,15 +41,16 @@ int main(int argc, char** argv){
       }
       draw(board);
       printf("Add pieces, format = <piece> at <cell>\n");
+      printf("Type \"Done\" to finish\n");
       i = 1;
       while(i){
         printf("Add piece: ");
-        scanf(" %c at %c%d", &piece, &col, &row);
-        if(piece == 'f'){
+        if(scanf(" %c at %c%d", &piece, &col, &row) == 1){
           i = 0;
-        }else{
-          if(col > 96){
-            i = place_piece(board, piece, 8-row, col-96);
+        }
+        else{
+          if(col >= 'a'){
+            i = place_piece(board, piece, 8-row, col-97);
           }else{
             i = place_piece(board, piece, 8-row, col-65);
           }
@@ -69,6 +70,7 @@ int main(int argc, char** argv){
     // do something else
   }
   play = 1;
+  printf("Beginning game\n");
   while(play){
     draw(board);
     play = move(player1, board);
