@@ -46,11 +46,11 @@ int main(int argc, char** argv){
       while(i){
         printf("Add piece: ");
         //TODO:fix this
-        scanf(" %c at %c%d", &piece, &col, &row);
+        scanf(" %c", &piece);
         if(piece == 'd'){
           i = 0;
-        }
-        else{
+        }else{
+          scanf(" at %c%d", &col, &row);
           if(col >= 'a'){
             i = place_piece(board, piece, 8-row, col-97);
           }else{
