@@ -41,11 +41,13 @@ int main(int argc, char** argv){
       }
       draw(board);
       printf("Add pieces, format = <piece> at <cell>\n");
-      printf("Type \"Done\" to finish\n");
+      printf("Type d to finish\n");
       i = 1;
       while(i){
         printf("Add piece: ");
-        if(scanf(" %c at %c%d", &piece, &col, &row) == 1){
+        //TODO:fix this
+        scanf(" %c at %c%d", &piece, &col, &row);
+        if(piece == 'd'){
           i = 0;
         }
         else{

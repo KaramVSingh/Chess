@@ -134,7 +134,7 @@ int check(board_t *board, int color){
         c = board->board[i-k][j];
         if(c == 'q' || c == 'r'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           up = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
           up = FALSE;
@@ -144,7 +144,7 @@ int check(board_t *board, int color){
         c = board->board[i+k][j];
         if(c == 'q' || c == 'r'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           down = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
           down = FALSE;
@@ -154,7 +154,7 @@ int check(board_t *board, int color){
         c = board->board[i][j-k];
         if(c == 'q' || c == 'r'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           left = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
           left = FALSE;
@@ -164,7 +164,7 @@ int check(board_t *board, int color){
         c = board->board[i][j+k];
         if(c == 'q' || c == 'r'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           right = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
           right = FALSE;
@@ -172,9 +172,9 @@ int check(board_t *board, int color){
       }
       k++;
       if(i-k < 0) up = FALSE;
-      if(i+k == MAX_ROWS) down = FALSE;
+      if(i+k >= MAX_ROWS) down = FALSE;
       if(j-k < 0) left = FALSE;
-      if(j+k == MAX_COLS) right = FALSE;
+      if(j+k >= MAX_COLS) right = FALSE;
 
       if(!up && !down && !left && !right){
         done = TRUE;
@@ -194,7 +194,7 @@ int check(board_t *board, int color){
         c = board->board[i-k][j+k];
         if(c == 'q' || c == 'b'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           up = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
           up = FALSE;
@@ -204,7 +204,7 @@ int check(board_t *board, int color){
         c = board->board[i+k][j+k];
         if(c == 'q' || c == 'b'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           right = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
           right = FALSE;
@@ -214,7 +214,7 @@ int check(board_t *board, int color){
         c = board->board[i+k][j-k];
         if(c == 'q' || c == 'b'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           down = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
           down = FALSE;
@@ -224,16 +224,16 @@ int check(board_t *board, int color){
         c = board->board[i-k][j-k];
         if(c == 'q' || c == 'b'){
           return TRUE;
-        }else if(c < 96){
+        }else if(c < 96 && c != 32){
           left = FALSE;
         }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
           left = FALSE;
         }
       }
       k++;
-      if(i-k < 0 || j+k == MAX_COLS) up = FALSE;
-      if(i+k == MAX_ROWS || j+k == MAX_COLS) right = FALSE;
-      if(i+k == MAX_ROWS || j-k < 0) down = FALSE;
+      if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
+      if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
+      if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
       if(i-k < 0 || j-k < 0) left = FALSE;
 
       if(!up && !down && !left && !right){
@@ -305,9 +305,9 @@ int check(board_t *board, int color){
       }
       k++;
       if(i-k < 0) up = FALSE;
-      if(i+k == MAX_ROWS) down = FALSE;
+      if(i+k >= MAX_ROWS) down = FALSE;
       if(j-k < 0) left = FALSE;
-      if(j+k == MAX_COLS) right = FALSE;
+      if(j+k >= MAX_COLS) right = FALSE;
 
       if(!up && !down && !left && !right){
         done = TRUE;
@@ -359,9 +359,9 @@ int check(board_t *board, int color){
         }
       }
       k++;
-      if(i-k < 0 || j+k == MAX_COLS) up = FALSE;
-      if(i+k == MAX_ROWS || j+k == MAX_COLS) right = FALSE;
-      if(i+k == MAX_ROWS || j-k < 0) down = FALSE;
+      if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
+      if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
+      if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
       if(i-k < 0 || j-k < 0) left = FALSE;
 
       if(!up && !down && !left && !right){
