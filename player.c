@@ -15,11 +15,11 @@ int move(player_t *player, board_t *board){
       }else if(n == 4){
         //move that piece if possible
 
-        //it is an invalid move is (a) there is a piece of the same color at that spot (b) that spot is out of reach for the piece 
+        //it is an invalid move is (a) there is a piece of the same color at that spot (b) that spot is out of reach for the piece
         //(c) they are moving to the same space (d) none of your pieces are on the first coordinate (e) the player moves into a check
 
-        //TODO: check if the king is in check - 
-
+        //TODO: check if the king is in check -
+        check(board, player->piece_type);
         //Check if their coordinates are equal
         if ((src_col == dst_col) && (src_row == dst_row)) {
           printf("Invalid: you must move your piece\n");

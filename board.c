@@ -70,7 +70,7 @@ board_t *create_board(){
   result->black[7].name = 'r';
   result->black[7].col = 7;
   result->black[7].val = 0;
-  
+
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       result->board[i][j] = '\0';
@@ -124,8 +124,124 @@ void draw(board_t * board){
   printf("  A   B   C   D   E   F   G   H \n");
 }
 
-int check(board_t *board){
+int check(board_t *board, int color){
+  int left, right, up, down, i, j, k, done;
+  char c;
 
+  left = right = up = down = TRUE;
+  done = 0;
+  k = 1;
+  if(color == WHITE){
+    i = board->white[0].row;
+    j = board->white[0].col;
+    //checking vertical and horizontal lines
+    while(!done){
+      if(up && i - k > 0){
+        c = board->board[i-k][j];
+        if(c == 'q' || c == 'r'){
+          return TRUE;
+        }else if(c < 96){
+          up = FALSE;
+        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
+          up = FALSE;
+        }
+      }
+      if(down && i + k < MAX_ROWS){
+        c = board->board[i+k][j];
+        if(c == 'q' || c == 'r'){
+          return TRUE;
+        }else if(c < 96){
+          down = FALSE;
+        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
+          down = FALSE;
+        }
+      }
+      if(left && j - k >= 0){
+        c = board->board[i][j-k];
+        if(c == 'q' || c == 'r'){
+          return TRUE;
+        }else if(c < 96){
+          left = FALSE;
+        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
+          left = FALSE;
+        }
+      }
+      if(right && j + k < MAX_COLS){
+        c = board->board[i][j+k];
+        if(c == 'q' || c == 'r'){
+          return TRUE;
+        }else if(c < 96){
+          right = FALSE;
+        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
+          right = FALSE;
+        }
+      }
+      k++;
+      if(i-k < 0) up = FALSE;
+      if(i+k == MAX_ROWS) down = FALSE;
+      if(j-k < 0) left = FALSE;
+      if(j+k == MAX_COLS) right = FALSE;
+
+      if(!up && !down && !left && !right){
+        done = TRUE;
+      }
+    }
+  }else{
+    i = board->black[0].row;
+    j = board->black[0].col;
+    //checking vertical and horizontal lines
+    while(!done){
+      if(up && i - k > 0){
+        c = board->board[i-k][j];
+        if(c == 'Q' || c == 'R'){
+          return TRUE;
+        }else if(c > 96){
+          up = FALSE;
+        }else if(c == 'K' || c == 'N' || c == 'B' || c == 'P'){
+          up = FALSE;
+        }
+      }
+      if(down && i + k < MAX_ROWS){
+        c = board->board[i+k][j];
+        if(c == 'Q' || c == 'R'){
+          return TRUE;
+        }else if(c > 96){
+          down = FALSE;
+        }else if(c == 'K' || c == 'N' || c == 'B' || c == 'P'){
+          down = FALSE;
+        }
+      }
+      if(left && j - k >= 0){
+        c = board->board[i][j-k];
+        if(c == 'Q' || c == 'R'){
+          return TRUE;
+        }else if(c > 96){
+          left = FALSE;
+        }else if(c == 'K' || c == 'N' || c == 'B' || c == 'P'){
+          left = FALSE;
+        }
+      }
+      if(right && j + k < MAX_COLS){
+        c = board->board[i][j+k];
+        if(c == 'Q' || c == 'R'){
+          return TRUE;
+        }else if(c > 96){
+          right = FALSE;
+        }else if(c == 'K' || c == 'N' || c == 'B' || c == 'P'){
+          right = FALSE;
+        }
+      }
+      k++;
+      if(i-k < 0) up = FALSE;
+      if(i+k == MAX_ROWS) down = FALSE;
+      if(j-k < 0) left = FALSE;
+      if(j+k == MAX_COLS) right = FALSE;
+
+      if(!up && !down && !left && !right){
+        done = TRUE;
+      }
+    }
+  }
 
   return 0;
 }
