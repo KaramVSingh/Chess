@@ -73,49 +73,43 @@ board_t *create_board(){
 
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
-      result->board[i][j] = '\0';
-      for(k = 0; k < 16; k++){
-        if(result->white[k].row == i && result->white[k].col == j){
-          result->board[i][j] = result->white[k].name;
-        }else if(result->black[k].row == i && result->black[k].col == j){
-          result->board[i][j] = result->black[k].name;
-        }
-      }
+      result->board[i][j] = ' ';
     }
   }
-  //need to fill board with pieces
-  /*
-  result->board[0][0] = result->board[0][7] = 'R';
-  result->board[0][1] = result->board[0][6] = 'N';
-  result->board[0][2] = result->board[0][5] = 'B';
-  result->board[0][3] = 'K';//double check this
-  result->board[0][4] = 'Q';
-  result->board[7][0] = result->board[7][7] = 'r';
-  result->board[7][1] = result->board[7][6] = 'n';
-  result->board[7][2] = result->board[7][5] = 'b';
-  result->board[7][3] = 'k';//double check this
-  result->board[7][4] = 'q';
-  for(i = 0; i < MAX_COLS; i++){
-    result->board[1][i] = 'P';
-    result->board[6][i] = 'p';
+  for(k = 0; k < 16; k++){
+    i = result->white[k].row;
+    j = result->white[k].col;
+    result->board[i][j] = result->white[k].name;
+    i = result->black[k].row;
+    j = result->black[k].col;
+    result->board[i][j] = result->black[k].name;
   }
-  */
 
   return result;
 }
 
 void draw(board_t * board){
-  int i, j;
+  int i, j, k;
   char c;
+  for(i = 0; i < MAX_ROWS; i++){
+    for(j = 0; j < MAX_COLS; j++){
+      board->board[i][j] = ' ';
+    }
+  }
+  for(k = 0; k < 16; k++){
+    i = board->white[k].row;
+    j = board->white[k].col;
+    board->board[i][j] = board->white[k].name;
+    i = board->black[k].row;
+    j = board->black[k].col;
+    board->board[i][j] = board->black[k].name;
+  }
+
   printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       c = board->board[i][j];
-      if(c){
-        printf("| %c ",c);
-      }else{
-        printf("|   ");
-      }
+      printf("| %c ",c);
     }
     printf("| %d\n", 8-i);
     printf("|___|___|___|___|___|___|___|___|\n");
