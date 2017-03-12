@@ -19,7 +19,8 @@ int move(player_t *player, board_t *board){
         //(c) they are moving to the same space (d) none of your pieces are on the first coordinate (e) the player moves into a check
 
         //TODO: check if the king is in check -
-        check(board, player->piece_type);
+        n = check_status(board, player->piece_type);
+        printf("Check_status: %d\n", n);
         //Check if their coordinates are equal
         if ((src_col == dst_col) && (src_row == dst_row)) {
           printf("Invalid: you must move your piece\n");

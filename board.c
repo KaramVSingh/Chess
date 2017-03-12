@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "board.h"
 
+int check(board_t *board, int color);
+
 board_t *create_board(){
   board_t *result;
   int i, j, k;
@@ -116,6 +118,682 @@ void draw(board_t * board){
 
   }
   printf("  A   B   C   D   E   F   G   H \n");
+}
+/*
+brute force check for a checkmate. This will check all the moves that the
+pieces can make, seeing if the king is still in check for every move
+*/
+int check_status(board_t *board, int color){
+  int i, j, k, row1, col1, done;
+  board_t temp;
+
+  if(check(board, color)){
+    if(color == WHITE){
+      //check if king has open moves
+      for(i = -1; i < 2; i++){
+        for(j = -1; j < 2; j++){
+          temp.white[0].row += i;
+          temp.white[0].col += j;
+          if(temp.white[0].row > 0 && temp.white[0].col > 0 &&
+            temp.white[0].row < MAX_ROWS && temp.white[0].col < MAX_COLS){
+              if((temp.board[i][j] > 96 || temp.board[i][j] == 32) &&
+                !check(&temp, color)) return 1;;
+          }
+          temp.white[0].row -= i;
+          temp.white[0].col -= j;
+        }
+      }
+      //check queen
+      if(!temp.white[1].taken){
+        done = 0;
+        row1 = temp.white[1].row;
+        col1 = temp.white[1].col;
+        //check up
+        while(!done){
+          i = --temp.white[1].row;
+          j = temp.white[1].col;
+          if(i >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        done = 0;
+        //check down
+        while(!done){
+          i = ++temp.white[1].row;
+          j = temp.white[1].col;
+          if(i < MAX_ROWS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        done = 0;
+        //check left
+        while(!done){
+          i = temp.white[1].row;
+          j = --temp.white[1].col;
+          if(j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].col = col1;
+        done = 0;
+        //check right
+        while(!done){
+          i = temp.white[1].row;
+          j = ++temp.white[1].col;
+          if(j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].col = col1;
+        done = 0;
+        //check up-right
+        while(!done){
+          i = --temp.white[1].row;
+          j = ++temp.white[1].col;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        temp.white[1].col = col1;
+        done = 0;
+        //check up-left
+        while(!done){
+          i = --temp.white[1].row;
+          j = --temp.white[1].col;
+          if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        temp.white[1].col = col1;
+        done = 0;
+        //check down-left
+        while(!done){
+          i = ++temp.white[1].row;
+          j = --temp.white[1].col;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        temp.white[1].col = col1;
+        done = 0;
+        //check down-right
+        while(!done){
+          i = ++temp.white[1].row;
+          j = ++temp.white[1].col;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.white[1].row = row1;
+        temp.white[1].col = col1;
+      }
+
+      //check bishops
+      for(k = 2; k < 4; k++){
+        if(!temp.white[k].taken){
+          row1 = temp.white[k].row;
+          col1 = temp.white[k].col;
+
+          done = 0;
+          //check up-right
+          while(!done){
+            i = --temp.white[k].row;
+            j = ++temp.white[k].col;
+            if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+          //check up-left
+          while(!done){
+            i = --temp.white[k].row;
+            j = --temp.white[k].col;
+            if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[1].row = row1;
+          temp.white[1].col = col1;
+          done = 0;
+          //check down-left
+          while(!done){
+            i = ++temp.white[k].row;
+            j = --temp.white[k].col;
+            if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+          //check down-right
+          while(!done){
+            i = ++temp.white[k].row;
+            j = ++temp.white[k].col;
+            if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+        }
+      }
+      //check knights
+      for(k = 4; k < 6; k++){
+        if(!temp.white[k].taken){
+          row1 = temp.white[k].row;
+          col1 = temp.white[k].col;
+
+          i = temp.white[k].row += 3;
+          j = temp.white[k].row += 2;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row += 3;
+          j = temp.white[k].row -= 2;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row -= 3;
+          j = temp.white[k].row += 2;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row -= 3;
+          j = temp.white[k].row -= 2;
+          if(i >= 0&& j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row += 2;
+          j = temp.white[k].row += 3;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row -= 2;
+          j = temp.white[k].row += 3;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row += 2;
+          j = temp.white[k].row -= 3;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+
+          i = temp.white[k].row -= 3;
+          j = temp.white[k].row -= 2;
+          if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+        }
+      }
+      //check rooks
+      for(k = 6; k < 8; k++){
+        if(!temp.white[k].taken){
+          row1 = temp.white[k].row;
+          col1 = temp.white[k].col;
+          done = 0;
+          //check up
+          while(!done){
+            i = --temp.white[k].row;
+            j = temp.white[k].col;
+            if(i >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+          //check left
+          while(!done){
+            i = temp.white[k].row;
+            j = --temp.white[k].col;
+            if(j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[1].row = row1;
+          temp.white[1].col = col1;
+          done = 0;
+          //check down
+          while(!done){
+            i = ++temp.white[k].row;
+            j = temp.white[k].col;
+            if(i < MAX_ROWS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+          //check down-right
+          while(!done){
+            i = temp.white[k].row;
+            j = ++temp.white[k].col;
+            if(j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.white[k].row = row1;
+          temp.white[k].col = col1;
+          done = 0;
+        }
+      }
+      //check pawns
+      for(k = 8; k < 16; k++){
+        if(!temp.white[k].taken){
+          i = ++temp.white[k].row;
+          j = temp.white[k].col;
+          if(i < MAX_ROWS && temp.board[i][j] == 32 && !check(&temp, color))
+            return 1;
+          j = --temp.white[k].col;
+          if(j >= 0 && temp.board[i][j] > 96 && !check(&temp, color))
+            return 1;
+          temp.white[k].col += 2;
+          j = temp.white[k].col;
+          if(j < MAX_COLS && temp.board[i][j] > 96 && !check(&temp, color))
+            return 1;
+          temp.white[k].row--;
+          temp.white[k].col--;
+        }
+      }
+      return -1;
+    }else{
+      for(i = -1; i < 2; i++){
+        for(j = -1; j < 2; j++){
+          temp.black[0].row += i;
+          temp.black[0].col += j;
+          if(temp.black[0].row > 0 && temp.black[0].col > 0 &&
+            temp.black[0].row < MAX_ROWS && temp.black[0].col < MAX_COLS){
+              if((temp.board[i][j] > 96 || temp.board[i][j] == 32) &&
+                !check(&temp, color)) return 1;;
+          }
+          temp.black[0].row -= i;
+          temp.black[0].col -= j;
+        }
+      }
+      //check queen
+      if(!temp.black[1].taken){
+        done = 0;
+        row1 = temp.black[1].row;
+        col1 = temp.black[1].col;
+        //check up
+        while(!done){
+          i = --temp.black[1].row;
+          j = temp.black[1].col;
+          if(i >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        done = 0;
+        //check down
+        while(!done){
+          i = ++temp.black[1].row;
+          j = temp.black[1].col;
+          if(i < MAX_ROWS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        done = 0;
+        //check left
+        while(!done){
+          i = temp.black[1].row;
+          j = --temp.black[1].col;
+          if(j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].col = col1;
+        done = 0;
+        //check right
+        while(!done){
+          i = temp.black[1].row;
+          j = ++temp.black[1].col;
+          if(j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].col = col1;
+        done = 0;
+        //check up-right
+        while(!done){
+          i = --temp.black[1].row;
+          j = ++temp.black[1].col;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        temp.black[1].col = col1;
+        done = 0;
+        //check up-left
+        while(!done){
+          i = --temp.black[1].row;
+          j = --temp.black[1].col;
+          if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        temp.black[1].col = col1;
+        done = 0;
+        //check down-left
+        while(!done){
+          i = ++temp.black[1].row;
+          j = --temp.black[1].col;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        temp.black[1].col = col1;
+        done = 0;
+        //check down-right
+        while(!done){
+          i = ++temp.black[1].row;
+          j = ++temp.black[1].col;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }else{
+            done = 1;
+          }
+        }
+        temp.black[1].row = row1;
+        temp.black[1].col = col1;
+      }
+
+      //check bishops
+      for(k = 2; k < 4; k++){
+        if(!temp.black[k].taken){
+          row1 = temp.black[k].row;
+          col1 = temp.black[k].col;
+
+          done = 0;
+          //check up-right
+          while(!done){
+            i = --temp.black[k].row;
+            j = ++temp.black[k].col;
+            if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+          //check up-left
+          while(!done){
+            i = --temp.black[k].row;
+            j = --temp.black[k].col;
+            if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[1].row = row1;
+          temp.black[1].col = col1;
+          done = 0;
+          //check down-left
+          while(!done){
+            i = ++temp.black[k].row;
+            j = --temp.black[k].col;
+            if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+          //check down-right
+          while(!done){
+            i = ++temp.black[k].row;
+            j = ++temp.black[k].col;
+            if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+        }
+      }
+      //check knights
+      for(k = 4; k < 6; k++){
+        if(!temp.black[k].taken){
+          row1 = temp.black[k].row;
+          col1 = temp.black[k].col;
+
+          i = temp.black[k].row += 3;
+          j = temp.black[k].row += 2;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row += 3;
+          j = temp.black[k].row -= 2;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row -= 3;
+          j = temp.black[k].row += 2;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row -= 3;
+          j = temp.black[k].row -= 2;
+          if(i >= 0&& j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row += 2;
+          j = temp.black[k].row += 3;
+          if(i < MAX_ROWS && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row -= 2;
+          j = temp.black[k].row += 3;
+          if(i >= 0 && j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row += 2;
+          j = temp.black[k].row -= 3;
+          if(i < MAX_ROWS && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+
+          i = temp.black[k].row -= 3;
+          j = temp.black[k].row -= 2;
+          if(i >= 0 && j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+            if(!check(&temp, color)) return 1;
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+        }
+      }
+      //check rooks
+      for(k = 6; k < 8; k++){
+        if(!temp.black[k].taken){
+          row1 = temp.black[k].row;
+          col1 = temp.black[k].col;
+          done = 0;
+          //check up
+          while(!done){
+            i = --temp.black[k].row;
+            j = temp.black[k].col;
+            if(i >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+          //check left
+          while(!done){
+            i = temp.black[k].row;
+            j = --temp.black[k].col;
+            if(j >= 0 && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[1].row = row1;
+          temp.black[1].col = col1;
+          done = 0;
+          //check down
+          while(!done){
+            i = ++temp.black[k].row;
+            j = temp.black[k].col;
+            if(i < MAX_ROWS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+          //check down-right
+          while(!done){
+            i = temp.black[k].row;
+            j = ++temp.black[k].col;
+            if(j < MAX_COLS && (temp.board[i][j] > 96 || temp.board[i][j] == 32)){
+              if(!check(&temp, color)) return 1;
+            }else{
+              done = 1;
+            }
+          }
+          temp.black[k].row = row1;
+          temp.black[k].col = col1;
+          done = 0;
+        }
+      }
+      //check pawns
+      for(k = 8; k < 16; k++){
+        if(!temp.black[k].taken){
+          i = --temp.black[k].row;
+          j = temp.black[k].col;
+          if(i >= 0 && temp.board[i][j] == 32 && !check(&temp, color))
+            return 1;
+          j = --temp.black[k].col;
+          if(j >= 0 && temp.board[i][j] > 96 && !check(&temp, color))
+            return 1;
+          temp.black[k].col += 2;
+          j = temp.black[k].col;
+          if(j < MAX_COLS && temp.board[i][j] > 96 && !check(&temp, color))
+            return 1;
+          temp.black[k].row--;
+          temp.black[k].col--;
+        }
+      }
+      return -1;
+    }
+  }
+  return 0;
 }
 
 int check(board_t *board, int color){
