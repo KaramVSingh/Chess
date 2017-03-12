@@ -54,14 +54,14 @@ int move(player_t *player, board_t *board){
 
           for(i = 0; i < 16; i++) {
             if(player->piece_type == WHITE) {
-              if(board->white[i].row == (8 - src_row) && board->white[i].col == (src_col-65)) {
-                board->white[i].row = 8 - dst_row;
-                board->white[i].col = dst_col - 65;
+              if(board->pieces[WHITE][i].row == (8 - src_row) && board->pieces[WHITE][i].col == (src_col-65)) {
+                board->pieces[WHITE][i].row = 8 - dst_row;
+                board->pieces[WHITE][i].col = dst_col - 65;
               }
             } else {
-              if(board->black[i].row == (8 - src_row) && board->black[i].col == (src_col-65)) {
-                board->black[i].row = 8 - dst_row;
-                board->black[i].col = dst_col - 65;
+              if(board->pieces[BLACK][i].row == (8 - src_row) && board->pieces[BLACK][i].col == (src_col-65)) {
+                board->pieces[BLACK][i].row = 8 - dst_row;
+                board->pieces[BLACK][i].col = dst_col - 65;
               }
             }
           }

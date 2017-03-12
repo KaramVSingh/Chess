@@ -10,68 +10,68 @@ board_t *create_board(){
 
   result = (board_t *)malloc(sizeof(board_t));
   for(i = 0; i< 8; i++){
-    result->white[i].row = 0;
-    result->white[i+8].row = 1;
-    result->white[i].taken = result->white[i+8].taken = 0;
-    result->black[i].row = 7;
-    result->black[i+8].row = 6;
-    result->black[i].taken = result->black[i+8].taken = 0;
+    result->pieces[WHITE][i].row = 0;
+    result->pieces[WHITE][i+8].row = 1;
+    result->pieces[WHITE][i].taken = result->pieces[WHITE][i+8].taken = 0;
+    result->pieces[BLACK][i].row = 7;
+    result->pieces[BLACK][i+8].row = 6;
+    result->pieces[BLACK][i].taken = result->pieces[BLACK][i+8].taken = 0;
 
-    result->white[i+8].name = 'P';
-    result->white[i+8].col = i;
-    result->black[i+8].name = 'p';
-    result->black[i+8].col = i;
-    result->white[i+8].val = 1;
-    result->black[i+8].val = 1;
+    result->pieces[WHITE][i+8].name = 'P';
+    result->pieces[WHITE][i+8].col = i;
+    result->pieces[BLACK][i+8].name = 'p';
+    result->pieces[BLACK][i+8].col = i;
+    result->pieces[WHITE][i+8].val = 1;
+    result->pieces[BLACK][i+8].val = 1;
   }
-  result->white[0].name = 'K';
-  result->white[0].col = 4;
-  result->white[0].val = 0;
-  result->white[1].name = 'Q';
-  result->white[1].col = 3;
-  result->white[1].val = 9;
-  result->white[2].name = 'B';
-  result->white[2].col = 2;
-  result->white[2].val = 3;
-  result->white[3].name = 'B';
-  result->white[3].col = 5;
-  result->white[3].val = 3;
-  result->white[4].name = 'N';
-  result->white[4].col = 1;
-  result->white[4].val = 3;
-  result->white[5].name = 'N';
-  result->white[5].col = 6;
-  result->white[5].val = 3;
-  result->white[6].name = 'R';
-  result->white[6].col = 0;
-  result->white[6].val = 5;
-  result->white[7].name = 'R';
-  result->white[7].col = 7;
-  result->white[7].val = 5;
-  result->black[0].name = 'k';
-  result->black[0].col = 4;
-  result->black[0].val = 0;
-  result->black[1].name = 'q';
-  result->black[1].col = 3;
-  result->black[1].val = 9;
-  result->black[2].name = 'b';
-  result->black[2].col = 2;
-  result->black[2].val = 3;
-  result->black[3].name = 'b';
-  result->black[3].col = 5;
-  result->black[3].val = 3;
-  result->black[4].name = 'n';
-  result->black[4].col = 1;
-  result->black[4].val = 3;
-  result->black[5].name = 'n';
-  result->black[5].col = 6;
-  result->black[5].val = 3;
-  result->black[6].name = 'r';
-  result->black[6].col = 0;
-  result->black[6].val = 5;
-  result->black[7].name = 'r';
-  result->black[7].col = 7;
-  result->black[7].val = 5;
+  result->pieces[WHITE][0].name = 'K';
+  result->pieces[WHITE][0].col = 4;
+  result->pieces[WHITE][0].val = 0;
+  result->pieces[WHITE][1].name = 'Q';
+  result->pieces[WHITE][1].col = 3;
+  result->pieces[WHITE][1].val = 9;
+  result->pieces[WHITE][2].name = 'B';
+  result->pieces[WHITE][2].col = 2;
+  result->pieces[WHITE][2].val = 3;
+  result->pieces[WHITE][3].name = 'B';
+  result->pieces[WHITE][3].col = 5;
+  result->pieces[WHITE][3].val = 3;
+  result->pieces[WHITE][4].name = 'N';
+  result->pieces[WHITE][4].col = 1;
+  result->pieces[WHITE][4].val = 3;
+  result->pieces[WHITE][5].name = 'N';
+  result->pieces[WHITE][5].col = 6;
+  result->pieces[WHITE][5].val = 3;
+  result->pieces[WHITE][6].name = 'R';
+  result->pieces[WHITE][6].col = 0;
+  result->pieces[WHITE][6].val = 5;
+  result->pieces[WHITE][7].name = 'R';
+  result->pieces[WHITE][7].col = 7;
+  result->pieces[WHITE][7].val = 5;
+  result->pieces[BLACK][0].name = 'k';
+  result->pieces[BLACK][0].col = 4;
+  result->pieces[BLACK][0].val = 0;
+  result->pieces[BLACK][1].name = 'q';
+  result->pieces[BLACK][1].col = 3;
+  result->pieces[BLACK][1].val = 9;
+  result->pieces[BLACK][2].name = 'b';
+  result->pieces[BLACK][2].col = 2;
+  result->pieces[BLACK][2].val = 3;
+  result->pieces[BLACK][3].name = 'b';
+  result->pieces[BLACK][3].col = 5;
+  result->pieces[BLACK][3].val = 3;
+  result->pieces[BLACK][4].name = 'n';
+  result->pieces[BLACK][4].col = 1;
+  result->pieces[BLACK][4].val = 3;
+  result->pieces[BLACK][5].name = 'n';
+  result->pieces[BLACK][5].col = 6;
+  result->pieces[BLACK][5].val = 3;
+  result->pieces[BLACK][6].name = 'r';
+  result->pieces[BLACK][6].col = 0;
+  result->pieces[BLACK][6].val = 5;
+  result->pieces[BLACK][7].name = 'r';
+  result->pieces[BLACK][7].col = 7;
+  result->pieces[BLACK][7].val = 5;
 
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
@@ -79,12 +79,12 @@ board_t *create_board(){
     }
   }
   for(k = 0; k < 16; k++){
-    i = result->white[k].row;
-    j = result->white[k].col;
-    result->board[i][j] = result->white[k].name;
-    i = result->black[k].row;
-    j = result->black[k].col;
-    result->board[i][j] = result->black[k].name;
+    i = result->pieces[WHITE][k].row;
+    j = result->pieces[WHITE][k].col;
+    result->board[i][j] = result->pieces[WHITE][k].name;
+    i = result->pieces[BLACK][k].row;
+    j = result->pieces[BLACK][k].col;
+    result->board[i][j] = result->pieces[BLACK][k].name;
   }
 
   return result;
@@ -99,12 +99,12 @@ void draw(board_t * board){
     }
   }
   for(k = 0; k < 16; k++){
-    i = board->white[k].row;
-    j = board->white[k].col;
-    if(!board->white[k].taken) board->board[i][j] = board->white[k].name;
-    i = board->black[k].row;
-    j = board->black[k].col;
-    if(!board->black[k].taken) board->board[i][j] = board->black[k].name;
+    i = board->pieces[WHITE][k].row;
+    j = board->pieces[WHITE][k].col;
+    if(!board->pieces[WHITE][k].taken) board->board[i][j] = board->pieces[WHITE][k].name;
+    i = board->pieces[BLACK][k].row;
+    j = board->pieces[BLACK][k].col;
+    if(!board->pieces[BLACK][k].taken) board->board[i][j] = board->pieces[BLACK][k].name;
   }
 
   printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
@@ -797,145 +797,146 @@ int check_status(board_t *board, int color){
 }
 
 int check(board_t *board, int color){
-  int left, right, up, down, i, j, k, done;
+  int left, right, up, down, i, j, k, done, shift;
   char c;
+
+  shift = color? 0: 32;
 
   left = right = up = down = TRUE;
   done = 0;
   k = 1;
-  if(color == WHITE){
-    i = board->white[0].row;
-    j = board->white[0].col;
-    //checking vertical and horizontal lines
-    while(!done){
-      if(up && i - k >= 0){
-        c = board->board[i-k][j];
-        if(c == 'q' || c == 'r'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          up = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
-          up = FALSE;
-        }
-      }
-      if(down && i + k < MAX_ROWS){
-        c = board->board[i+k][j];
-        if(c == 'q' || c == 'r'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          down = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
-          down = FALSE;
-        }
-      }
-      if(left && j - k >= 0){
-        c = board->board[i][j-k];
-        if(c == 'q' || c == 'r'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          left = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
-          left = FALSE;
-        }
-      }
-      if(right && j + k < MAX_COLS){
-        c = board->board[i][j+k];
-        if(c == 'q' || c == 'r'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          right = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'b' || c == 'p'){
-          right = FALSE;
-        }
-      }
-      k++;
-      if(i-k < 0) up = FALSE;
-      if(i+k >= MAX_ROWS) down = FALSE;
-      if(j-k < 0) left = FALSE;
-      if(j+k >= MAX_COLS) right = FALSE;
-
-      if(!up && !down && !left && !right){
-        done = TRUE;
+  i = board->pieces[color][0].row;
+  j = board->pieces[color][0].col;
+  //checking vertical and horizontal lines
+  while(!done){
+    if(up && i - k >= 0){
+      c = board->board[i-k][j];
+      if(c == 'Q' + shift || c == 'R' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        up = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'B' + shift || c == 'P' + shift){
+        up = FALSE;
       }
     }
-    //checking diagonals
-    /*
-    I'm going to use the same variable names as before for simplicity's sake.
-    I'll be going clockwise around, so up == up-right, right == down-right,
-    down == down-left, and left == up-left.
-    */
-    left = right = up = down = TRUE;
-    done = 0;
-    k = 1;
-    while(!done){
-      if(up && i-k >= 0 && j+k < MAX_COLS){
-        c = board->board[i-k][j+k];
-        if(c == 'q' || c == 'b'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          up = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
-          up = FALSE;
-        }
-      }
-      if(right && i+k < MAX_ROWS && j+k < MAX_COLS){
-        c = board->board[i+k][j+k];
-        if(c == 'q' || c == 'b'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          right = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
-          right = FALSE;
-        }
-      }
-      if(down && i+k < MAX_ROWS && j-k >= 0){
-        c = board->board[i+k][j-k];
-        if(c == 'q' || c == 'b'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          down = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
-          down = FALSE;
-        }
-      }
-      if(left && i-k >= 0 && j-k >= 0){
-        c = board->board[i-k][j-k];
-        if(c == 'q' || c == 'b'){
-          return TRUE;
-        }else if(c < 96 && c != 32){
-          left = FALSE;
-        }else if(c == 'k' || c == 'n' || c == 'r' || c == 'p'){
-          left = FALSE;
-        }
-      }
-      k++;
-      if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
-      if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
-      if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
-      if(i-k < 0 || j-k < 0) left = FALSE;
-
-      if(!up && !down && !left && !right){
-        done = TRUE;
+    if(down && i + k < MAX_ROWS){
+      c = board->board[i+k][j];
+      if(c == 'Q' + shift || c == 'R' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        down = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'B' + shift || c == 'P' + shift){
+        down = FALSE;
       }
     }
-    //checking for knights
-    if(i+3 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i+3 < MAX_ROWS && j-2 >= 0 && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i-3 >= 0 && j+2 < MAX_COLS && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i-3 >= 0 && j-2 >= 0 && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i+2 < MAX_ROWS && j+3 < MAX_COLS && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i+2 < MAX_ROWS && j-3 >= 0 && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i-2 >= 0 && j+3 < MAX_COLS && board->board[i+3][j+2] == 'k')
-      return TRUE;
-    if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == 'k')
-      return TRUE;
+    if(left && j - k >= 0){
+      c = board->board[i][j-k];
+      if(c == 'Q' + shift || c == 'R' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        left = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'B' + shift || c == 'P' + shift){
+        left = FALSE;
+      }
+    }
+    if(right && j + k < MAX_COLS){
+      c = board->board[i][j+k];
+      if(c == 'Q' + shift || c == 'R' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        right = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'B' + shift || c == 'P' + shift){
+        right = FALSE;
+      }
+    }
+    k++;
+    if(i-k < 0) up = FALSE;
+    if(i+k >= MAX_ROWS) down = FALSE;
+    if(j-k < 0) left = FALSE;
+    if(j+k >= MAX_COLS) right = FALSE;
 
+    if(!up && !down && !left && !right){
+      done = TRUE;
+    }
+  }
+  //checking diagonals
+  /*
+  I'm going to use the same variable names as before for simplicity's sake.
+  I'll be going clockwise around, so up == up-right, right == down-right,
+  down == down-left, and left == up-left.
+  */
+  left = right = up = down = TRUE;
+  done = 0;
+  k = 1;
+  while(!done){
+    if(up && i-k >= 0 && j+k < MAX_COLS){
+      c = board->board[i-k][j+k];
+      if(c == 'Q' + shift || c == 'B' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        up = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'R' + shift || c == 'P' + shift){
+        up = FALSE;
+      }
+    }
+    if(right && i+k < MAX_ROWS && j+k < MAX_COLS){
+      c = board->board[i+k][j+k];
+      if(c == 'Q' + shift || c == 'B' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        right = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'R' + shift || c == 'P' + shift){
+        right = FALSE;
+      }
+    }
+    if(down && i+k < MAX_ROWS && j-k >= 0){
+      c = board->board[i+k][j-k];
+      if(c == 'Q' + shift || c == 'B' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        down = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'R' + shift || c == 'P' + shift){
+        down = FALSE;
+      }
+    }
+    if(left && i-k >= 0 && j-k >= 0){
+      c = board->board[i-k][j-k];
+      if(c == 'Q' + shift || c == 'B' + shift){
+        return TRUE;
+      }else if(c < 96 && c != 32){
+        left = FALSE;
+      }else if(c == 'K' + shift || c == 'n' + shift || c == 'R' + shift || c == 'P' + shift){
+        left = FALSE;
+      }
+    }
+    k++;
+    if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
+    if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
+    if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
+    if(i-k < 0 || j-k < 0) left = FALSE;
+
+    if(!up && !down && !left && !right){
+      done = TRUE;
+    }
+  }
+  //checking for knights
+  if(i+3 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i+3 < MAX_ROWS && j-2 >= 0 && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i-3 >= 0 && j+2 < MAX_COLS && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i-3 >= 0 && j-2 >= 0 && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i+2 < MAX_ROWS && j+3 < MAX_COLS && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i+2 < MAX_ROWS && j-3 >= 0 && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i-2 >= 0 && j+3 < MAX_COLS && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+  if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == 'K' + shift)
+    return TRUE;
+/*
   }else{
     i = board->black[0].row;
     j = board->black[0].col;
@@ -1064,150 +1065,80 @@ int check(board_t *board, int color){
     if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == 'K')
       return TRUE;
 
-  }
+  }*/
 
   return 0;
 }
 
 int place_piece(board_t *board, char name, int row, int col){
-  int i = 0;
+  int i = 0, color = BLACK;
 
   switch (name) {
-    case 'k':
-      board->black[0].taken = FALSE;
-      board->black[0].row = row;
-      board->black[0].col = col;
-      break;
-    //TODO:should check if piece already taken for these, can use a pawn if need be
-    case 'q':
-      board->black[1].taken = FALSE;
-      board->black[1].row = row;
-      board->black[1].col = col;
-      break;
-    case 'b':
-      if(board->black[2].taken){
-        board->black[2].taken = FALSE;
-        board->black[2].row = row;
-        board->black[2].col = col;
-      }else if(board->black[3].taken){
-        board->black[3].taken = FALSE;
-        board->black[3].row = row;
-        board->black[3].col = col;
-      }else{
-      //replace with pawn stuff
-        return 0;
-      }
-      break;
-    case 'n':
-      if(board->black[4].taken){
-        board->black[4].taken = FALSE;
-        board->black[4].row = row;
-        board->black[4].col = col;
-      }else if(board->black[5].taken){
-        board->black[5].taken = FALSE;
-        board->black[5].row = row;
-        board->black[5].col = col;
-      }else{
-      //replace with pawn stuff
-        return 0;
-      }
-      break;
-    case 'r':
-      if(board->black[6].taken){
-        board->black[6].taken = FALSE;
-        board->black[6].row = row;
-        board->black[6].col = col;
-      }else if(board->black[7].taken){
-        board->black[7].taken = FALSE;
-        board->black[7].row = row;
-        board->black[7].col = col;
-      }else{
-      //replace with pawn stuff
-        return 0;
-      }
-      break;
-    case 'p':
-      while(i < 8 && !board->black[8+i].taken){
-        i++;
-      }
-      if(i < 8){
-        board->black[0].taken = FALSE;
-        board->black[0].row = row;
-        board->black[0].col = col;
-      }else{
-        //no more pawns
-        return 0;
-      }
-      break;
     case 'K':
-      board->white[0].taken = FALSE;
-      board->white[0].row = row;
-      board->white[0].col = col;
+    color = WHITE;
+    case 'k':
+      i = 0;
       break;
     //TODO:should check if piece already taken for these, can use a pawn if need be
     case 'Q':
-      board->white[1].taken = FALSE;
-      board->white[1].row = row;
-      board->white[1].col = col;
+      color = WHITE;
+    case 'q':
+      i = 1;
       break;
     case 'B':
-      if(board->white[2].taken){
-        board->white[2].taken = FALSE;
-        board->white[2].row = row;
-        board->white[2].col = col;
-      }else if(board->white[3].taken){
-        board->white[3].taken = FALSE;
-        board->white[3].row = row;
-        board->white[3].col = col;
+      color = WHITE;
+    case 'b':
+      if(board->pieces[color][2].taken){
+        i = 2;
+      }else if(board->pieces[color][3].taken){
+        i = 3;
       }else{
       //replace with pawn stuff
         return 0;
       }
       break;
     case 'N':
-      if(board->white[4].taken){
-        board->white[4].taken = FALSE;
-        board->white[4].row = row;
-        board->white[4].col = col;
-      }else if(board->white[5].taken){
-        board->white[5].taken = FALSE;
-        board->white[5].row = row;
-        board->white[5].col = col;
+      color = WHITE;
+    case 'n':
+      if(board->pieces[color][4].taken){
+        i = 4;
+      }else if(board->pieces[color][5].taken){
+        i = 5;
       }else{
       //replace with pawn stuff
         return 0;
       }
       break;
     case 'R':
-      if(board->white[6].taken){
-        board->white[6].taken = FALSE;
-        board->white[6].row = row;
-        board->white[6].col = col;
-      }else if(board->white[7].taken){
-        board->white[7].taken = FALSE;
-        board->white[7].row = row;
-        board->white[7].col = col;
+      color = WHITE;
+    case 'r':
+      if(board->pieces[color][6].taken){
+        i = 6;
+      }else if(board->pieces[color][7].taken){
+        i = 7;
       }else{
       //replace with pawn stuff
         return 0;
       }
       break;
     case 'P':
-      while(i < 8 && !board->white[8+i].taken){
+      color = WHITE;
+    case 'p':
+      while(i < 8 && !board->pieces[color][8+i].taken){
         i++;
-      }
-      if(i < 8){
-        board->white[0].taken = FALSE;
-        board->white[0].row = row;
-        board->white[0].col = col;
-      }else{
-        //no more pawns
-        return 0;
       }
       break;
     default:
       return 0;
       break;
+  }
+  if(i < 8){
+    board->pieces[color][i].taken = FALSE;
+    board->pieces[color][i].row = row;
+    board->pieces[color][i].col = col;
+  }else{
+    //invalid
+    return 0;
   }
   return 1;
 }

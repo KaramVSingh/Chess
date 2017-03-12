@@ -17,8 +17,7 @@ typedef struct{
 typedef struct{
   char board[8][8];
   //made this a type in case there are other properties we want to add
-  piece_t white[16];
-  piece_t black[16];
+  piece_t pieces[2][16];
 } board_t;
 
 board_t * create_board();
