@@ -2,7 +2,7 @@
 #include "player.h"
 
 int move(player_t *player, board_t *board){
-  int n, src_row, dst_row, invalid_move = 0;
+  int n, src_row, dst_row, invalid_move = 0, i;
   char src_col, dst_col;
 
   if(player->is_human){
@@ -50,6 +50,23 @@ int move(player_t *player, board_t *board){
         //if the move is legal, invalid move = false
         else {
           invalid_move = FALSE;
+
+
+          for(i = 0; i < 16; i++) {
+            if(player->piece_type == WHITE) {
+              if(board->white[i].row == (8 - src_row) && board->white[i].col == (src_col-65)) {
+                board->white[i].row = 8 - dst_row;
+                board->white[i].col = dst_col - 65;
+              }
+            } else {
+              if(board->black[i].row == (8 - src_row) && board->black[i].col == (src_col-65)) {
+                board->black[i].row = 8 - dst_row;
+                board->black[i].col = dst_col - 65;
+              }
+            }
+          }
+
+          draw(board);
         }
 
         //TODO: check if king is in check
