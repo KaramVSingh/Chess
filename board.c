@@ -1084,140 +1084,139 @@ int check(board_t *board, int color){
   done = 0;
   shift = color? 0: 32;
   k = 1;
-  if(color == WHITE){
-    i = board->pieces[color][0].row;
-    j = board->pieces[color][0].col;
-    //checking vertical and horizontal lines
-    while(!done){
-      if(up && i - k >= 0){
-        c = board->board[i-k][j];
-        if(c == ('Q' + shift) || c == ('R' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
-          up = FALSE;
-        }else if(c != 32){
-          up = FALSE;
-        }
-      }
-      if(down && i + k < MAX_ROWS){
-        c = board->board[i+k][j];
-        if(c == ('Q' + shift) || c == ('R' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
-          down = FALSE;
-        }else if(c != 32){
-          down = FALSE;
-        }
-      }
-      if(left && j - k >= 0){
-        c = board->board[i][j-k];
-        if(c == ('Q' + shift) || c == ('R' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
-          left = FALSE;
-        }else if(c != 32){
-          left = FALSE;
-        }
-      }
-      if(right && j + k < MAX_COLS){
-        c = board->board[i][j+k];
-        if(c == ('Q' + shift) || c == ('R' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
-          right = FALSE;
-        }else if(c != 32){
-          right = FALSE;
-        }
-      }
-      k++;
-      if(i-k < 0) up = FALSE;
-      if(i+k >= MAX_ROWS) down = FALSE;
-      if(j-k < 0) left = FALSE;
-      if(j+k >= MAX_COLS) right = FALSE;
 
-      if(!up && !down && !left && !right){
-        done = TRUE;
+  i = board->pieces[color][0].row;
+  j = board->pieces[color][0].col;
+  //checking vertical and horizontal lines
+  while(!done){
+    if(up && i - k >= 0){
+      c = board->board[i-k][j];
+      if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+        up = FALSE;
+      }else if(c != 32){
+        up = FALSE;
       }
     }
-    //checking diagonals
-/*
-    I'm going to use the same variable names as before for simplicity's sake.
-    I'll be going clockwise around, so up == up-right, right == down-right,
-    down == down-left, and left == up-left.
-*/
-    left = right = up = down = TRUE;
-    done = 0;
-    k = 1;
-    while(!done){
-      if(up && i-k >= 0 && j+k < MAX_COLS){
-        c = board->board[i-k][j+k];
-        if(c == ('Q' + shift) || c == ('B' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
-          up = FALSE;
-        }else if(c != 32){
-          up = FALSE;
-        }
-      }
-      if(right && i+k < MAX_ROWS && j+k < MAX_COLS){
-        c = board->board[i+k][j+k];
-        if(c == ('Q' + shift) || c == ('B' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
-          right = FALSE;
-        }else if(c != 32){
-          right = FALSE;
-        }
-      }
-      if(down && i+k < MAX_ROWS && j-k >= 0){
-        c = board->board[i+k][j-k];
-        if(c == ('Q' + shift) || c == ('B' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
-          down = FALSE;
-        }else if(c != 32){
-          down = FALSE;
-        }
-      }
-      if(left && i-k >= 0 && j-k >= 0){
-        c = board->board[i-k][j-k];
-        if(c == ('Q' + shift) || c == ('B' + shift)){
-          return TRUE;
-        }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
-          left = FALSE;
-        }else if(c != 32){
-          left = FALSE;
-        }
-      }
-      k++;
-      if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
-      if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
-      if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
-      if(i-k < 0 || j-k < 0) left = FALSE;
-
-      if(!up && !down && !left && !right){
-        done = TRUE;
+    if(down && i + k < MAX_ROWS){
+      c = board->board[i+k][j];
+      if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+        down = FALSE;
+      }else if(c != 32){
+        down = FALSE;
       }
     }
-    //checking for knights
-    if(i+3 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i+3 < MAX_ROWS && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i-3 >= 0 && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i-3 >= 0 && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i+2 < MAX_ROWS && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i+2 < MAX_ROWS && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i-2 >= 0 && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
-    if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
-      return TRUE;
+    if(left && j - k >= 0){
+      c = board->board[i][j-k];
+      if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+        left = FALSE;
+      }else if(c != 32){
+        left = FALSE;
+      }
+    }
+    if(right && j + k < MAX_COLS){
+      c = board->board[i][j+k];
+      if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+        right = FALSE;
+      }else if(c != 32){
+        right = FALSE;
+      }
+    }
+    k++;
+    if(i-k < 0) up = FALSE;
+    if(i+k >= MAX_ROWS) down = FALSE;
+    if(j-k < 0) left = FALSE;
+    if(j+k >= MAX_COLS) right = FALSE;
 
+    if(!up && !down && !left && !right){
+      done = TRUE;
+    }
   }
+  //checking diagonals
+/*
+  I'm going to use the same variable names as before for simplicity's sake.
+  I'll be going clockwise around, so up == up-right, right == down-right,
+  down == down-left, and left == up-left.
+*/
+  left = right = up = down = TRUE;
+  done = 0;
+  k = 1;
+  while(!done){
+    if(up && i-k >= 0 && j+k < MAX_COLS){
+      c = board->board[i-k][j+k];
+      if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+        up = FALSE;
+      }else if(c != 32){
+        up = FALSE;
+      }
+    }
+    if(right && i+k < MAX_ROWS && j+k < MAX_COLS){
+      c = board->board[i+k][j+k];
+      if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+        right = FALSE;
+      }else if(c != 32){
+        right = FALSE;
+      }
+    }
+    if(down && i+k < MAX_ROWS && j-k >= 0){
+      c = board->board[i+k][j-k];
+      if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+        down = FALSE;
+      }else if(c != 32){
+        down = FALSE;
+      }
+    }
+    if(left && i-k >= 0 && j-k >= 0){
+      c = board->board[i-k][j-k];
+      if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+        left = FALSE;
+      }else if(c != 32){
+        left = FALSE;
+      }
+    }
+    k++;
+    if(i-k < 0 || j+k >= MAX_COLS) up = FALSE;
+    if(i+k >= MAX_ROWS || j+k >= MAX_COLS) right = FALSE;
+    if(i+k >= MAX_ROWS || j-k < 0) down = FALSE;
+    if(i-k < 0 || j-k < 0) left = FALSE;
+
+    if(!up && !down && !left && !right){
+      done = TRUE;
+    }
+  }
+  //checking for knights
+  if(i+3 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i+3 < MAX_ROWS && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i-3 >= 0 && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i-3 >= 0 && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i+2 < MAX_ROWS && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i+2 < MAX_ROWS && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i-2 >= 0 && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+  if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+    return TRUE;
+
   return 0;
 }
 
