@@ -90,9 +90,9 @@ board_t *create_board(){
   return result;
 }
 
-void draw(board_t * board){
+void update_board(board_t *board){
   int i, j, k;
-  char c;
+
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       board->board[i][j] = ' ';
@@ -106,6 +106,12 @@ void draw(board_t * board){
     j = board->pieces[BLACK][k].col;
     if(!board->pieces[BLACK][k].taken) board->board[i][j] = board->pieces[BLACK][k].name;
   }
+}
+void draw(board_t * board){
+  int i, j;
+  char c;
+
+  update_board(board);
 
   printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
   for(i = 0; i < MAX_ROWS; i++){
@@ -126,7 +132,7 @@ pieces can make, seeing if the king is still in check for every move
 int check_status(board_t *board, int color){
   int i, j, k, row, col, done, shift;
 
-  shift = color? 64: 96;
+  shift = color? 96: 64;
   if(check(board, color)){
     for(k = 0; k < 16; k++){
       row = board->pieces[color][k].row;
@@ -397,6 +403,7 @@ int check_status(board_t *board, int color){
       }
       board->pieces[color][k].row = row;
       board->pieces[color][k].col = col;
+      update_board(board);
     }
     return -1;
   }
@@ -1082,8 +1089,9 @@ int check(board_t *board, int color){
 
   left = right = up = down = TRUE;
   done = 0;
-  shift = color? 0: 32;
+  shift = color? 32: 0;
   k = 1;
+  update_board(board);
 
   i = board->pieces[color][0].row;
   j = board->pieces[color][0].col;

@@ -22,6 +22,7 @@ typedef struct{
 
 board_t * create_board();
 
+void update_board(board_t *board);
 void draw(board_t *board);
 
 //might not need this function, but could be handy
