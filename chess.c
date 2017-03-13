@@ -36,8 +36,8 @@ int main(int argc, char** argv){
   }else if(argc == 2){
     if(strcmp(argv[1], "-p") == 0){
       for(i = 0; i < 16; i++){
-        board->white[i].taken = TRUE;
-        board->black[i].taken = TRUE;
+        board->pieces[WHITE][i].taken = TRUE;
+        board->pieces[BLACK][i].taken = TRUE;
       }
       draw(board);
       printf("Add pieces, format = <piece> at <cell>\n");
