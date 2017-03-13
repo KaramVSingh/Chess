@@ -813,9 +813,9 @@ int check(board_t *board, int color){
         c = board->board[i-k][j];
         if(c == ('Q' + shift) || c == ('R' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          up = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+          up = FALSE;
+        }else if(c != 32){
           up = FALSE;
         }
       }
@@ -823,9 +823,9 @@ int check(board_t *board, int color){
         c = board->board[i+k][j];
         if(c == ('Q' + shift) || c == ('R' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          down = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+          down = FALSE;
+        }else if(c != 32){
           down = FALSE;
         }
       }
@@ -833,9 +833,9 @@ int check(board_t *board, int color){
         c = board->board[i][j-k];
         if(c == ('Q' + shift) || c == ('R' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          left = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+          left = FALSE;
+        }else if(c != 32){
           left = FALSE;
         }
       }
@@ -843,9 +843,9 @@ int check(board_t *board, int color){
         c = board->board[i][j+k];
         if(c == ('Q' + shift) || c == ('R' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          right = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
+          right = FALSE;
+        }else if(c != 32){
           right = FALSE;
         }
       }
@@ -873,9 +873,9 @@ int check(board_t *board, int color){
         c = board->board[i-k][j+k];
         if(c == ('Q' + shift) || c == ('B' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          up = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+          up = FALSE;
+        }else if(c != 32){
           up = FALSE;
         }
       }
@@ -883,9 +883,9 @@ int check(board_t *board, int color){
         c = board->board[i+k][j+k];
         if(c == ('Q' + shift) || c == ('B' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          right = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+          right = FALSE;
+        }else if(c != 32){
           right = FALSE;
         }
       }
@@ -893,9 +893,9 @@ int check(board_t *board, int color){
         c = board->board[i+k][j-k];
         if(c == ('Q' + shift) || c == ('B' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          down = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+          down = FALSE;
+        }else if(c != 32){
           down = FALSE;
         }
       }
@@ -903,9 +903,9 @@ int check(board_t *board, int color){
         c = board->board[i-k][j-k];
         if(c == ('Q' + shift) || c == ('B' + shift)){
           return TRUE;
-        }else if(c < 96 && c != 32){
-          left = FALSE;
         }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
+          left = FALSE;
+        }else if(c != 32){
           left = FALSE;
         }
       }
