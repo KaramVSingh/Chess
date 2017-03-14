@@ -624,3 +624,218 @@ int place_piece(board_t *board, char name, int row, int col){
   board->pieces[color][i].col = col;
   return 1;
 }
+
+
+int check_movement(board_t *board, int piece_type, int piece_number, int row, int col) {
+  
+  char type = board->pieces[piece_type][piece_number].name;
+
+  switch (type) {
+
+    case 'K' : 
+    case 'k' :if (abs(board->pieces[piece_type][piece_number].row-row) <= 1 && abs(board->pieces[piece_type][piece_number].col-col) <= 1) {
+                return 1;
+              }
+              break;
+    case 'Q' : 
+    case 'q' :if (board->pieces[piece_type][piece_number].row == row || board->pieces[piece_type][piece_number].col == col || 
+                  abs(board->pieces[piece_type][piece_number].row-row) == abs(board->pieces[piece_type][piece_number].col-col)) {
+                return 1;
+              }
+              break;
+    case 'R' :
+    case 'r' :if (board->pieces[piece_type][piece_number].row == row || board->pieces[piece_type][piece_number].col == col) {
+                return 1;
+              }
+              break;
+    case 'N' :
+    case 'n' :if (abs(board->pieces[piece_type][piece_number].row - row) == 1 && abs(board->pieces[piece_type][piece_number].col - col) == 2) {
+                return 1;
+              } else if (abs(board->pieces[piece_type][piece_number].row - row) == 2 && abs(board->pieces[piece_type][piece_number].col - col) == 1) {
+                return 1;
+              }
+              break;
+    case 'B' :
+    case 'b' :if (abs(board->pieces[piece_type][piece_number].row-row) == abs(board->pieces[piece_type][piece_number].col-col)) {
+                return 1;
+              }
+              break;
+    case 'P' :if (board->pieces[piece_type][piece_number].row == 1 && row == 3 && col == board->pieces[piece_type][piece_number].col) {
+                return 1;
+              } else if (board->pieces[piece_type][piece_number].col == col && board->pieces[piece_type][piece_number].row + 1 == row) {
+                return 1;
+              } else if ((board->pieces[piece_type][piece_number].col + 1 == col || board->pieces[piece_type][piece_number].col - 1 == col) && board->pieces[piece_type][piece_number].row + 1 == row) {
+                return 1;
+              }
+              break;
+    case 'p' :if (board->pieces[piece_type][piece_number].row == 6 && row == 4 && col == board->pieces[piece_type][piece_number].col) {
+                return 1;
+              } else if (board->pieces[piece_type][piece_number].col == col && board->pieces[piece_type][piece_number].row - 1 == row) {
+                return 1;
+              } else if ((board->pieces[piece_type][piece_number].col + 1 == col || board->pieces[piece_type][piece_number].col - 1 == col) && board->pieces[piece_type][piece_number].row - 1 == row) {
+                return 1;
+              }
+              break;
+  } 
+  return 0;
+}
+
+int check_collision(board_t *board, int piece_type, int piece_number, int row, int col) {
+  
+  char type = board->pieces[piece_type][piece_number].name;
+  int i, x, y, distance;
+
+  if (board->pieces[piece_type][piece_number].row - row > 0) {
+    //we are traveling in the up direction:
+    y = -1;
+  } else if (board->pieces[piece_type][piece_number].row - row == 0) {
+    //There is no y component to the trip:
+    y = 0;
+  } else {
+    //we are traveling in the down direction:
+    y = 1;
+  }
+
+  if (board->pieces[piece_type][piece_number].col - col > 0) {
+    //we are traveling in the left direction:
+    x = -1;
+  } else if (board->pieces[piece_type][piece_number].col - col == 0) {
+    //there is no x component to the trip:
+    x = 0;
+  } else {
+    //we are traveling in the right direction:
+    x = 1;
+  }
+
+  if (x != 0 && y != 0) {
+    distance = abs(board->pieces[piece_type][piece_number].row - row);
+  } else if (x == 0) {
+    distance = abs(board->pieces[piece_type][piece_number].row - row);
+  } else {
+    distance = abs(board->pieces[piece_type][piece_number].col - col);
+  }
+
+  switch (type) {
+
+    case 'K' :
+    case 'Q' :
+    case 'R' :
+    case 'B' :for (i = 1; i <= distance; i++) {
+                if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'A'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z') {
+                    //if there is a piece on the path of the same color
+                    return 0;
+                } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z'
+                    && board->pieces[piece_type][piece_number].row + i*y == row && board->pieces[piece_type][piece_number].col + i*x == col) {
+                    //if it is the last point and it has reached a piece of a different color
+
+                    //TODO: take the piece
+                    printf("Take Piece!\n");
+                    return 1;
+                } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z'
+                    && (board->pieces[piece_type][piece_number].row + i*y != row || board->pieces[piece_type][piece_number].col + i*x != col)) {
+                    //if it has not yet reached the last point and it has reached a piece of a different color
+                    return 0;
+                }
+              }
+              break;
+
+    case 'k' :
+    case 'q' :
+    case 'r' :
+    case 'b' :for (i = 1; i <= distance; i++) {
+                if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z') {
+                    //if there is a piece on the path of the same color
+                    return 0;
+                } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'A'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z'
+                    && board->pieces[piece_type][piece_number].row + i*y == row && board->pieces[piece_type][piece_number].col + i*x == col) {
+                    //if it is the last point and it has reached a piece of a different color
+
+                    //TODO: take the piece
+                    printf("Take Piece!\n");
+                    return 1;
+                } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'A'
+                    && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z'
+                    && (board->pieces[piece_type][piece_number].row + i*y != row || board->pieces[piece_type][piece_number].col + i*x != col)) {
+                    //if it has not yet reached the last point and it has reached a piece of a different color
+                    return 0;
+                }
+              }
+              break;
+
+    case 'N' :if (board->board[row][col] > 'A' && board->board[row][col] < 'Z') {
+                return 0;
+              } else if (board->board[row][col] > 'a' && board->board[row][col] < 'z') {
+                //TODO: take the piece
+                printf("Take Piece!\n");
+
+                return 1;
+              }
+              break;
+
+    case 'n' :if (board->board[row][col] > 'a' && board->board[row][col] < 'z') {
+                return 0;
+              } else if (board->board[row][col] > 'A' && board->board[row][col] < 'Z') {
+                //TODO: take the piece
+                printf("Take Piece!\n");
+
+                return 1;
+              }
+              break;
+
+    case 'P' :if (x != 0) {
+                if (board->board[row][col] > 'a' && board->board[row][col] < 'z') {
+                  //TODO: take the piece
+                  printf("Take Piece!\n");
+
+                  return 1;
+                } else {
+                  return 0;
+                }
+              } else {
+                  for (i = 1; i <= distance; i++) {
+                    if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'A'
+                        && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z') {
+                        //if there is a piece on the path of the same color
+                        return 0;
+                    } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
+                        && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z'
+                        && (board->pieces[piece_type][piece_number].row + i*y != row || board->pieces[piece_type][piece_number].col + i*x != col)) {
+                        //if it has not yet reached the last point and it has reached a piece of a different color
+                        return 0;
+                    }
+                  }
+              }
+              break;
+
+    case 'p' :if (x != 0) {
+                if (board->board[row][col] > 'A' && board->board[row][col] < 'Z') {
+                  //TODO: take the piece
+                  printf("Take Piece!\n");
+
+                  return 1;
+                } else {
+                  return 0;
+                }
+              } else {
+                  for (i = 1; i <= distance; i++) {
+                    if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
+                        && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z') {
+                        //if there is a piece on the path of the same color
+                        return 0;
+                    } else if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'A'
+                        && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z'
+                        && (board->pieces[piece_type][piece_number].row + i*y != row || board->pieces[piece_type][piece_number].col + i*x != col)) {
+                        //if it has not yet reached the last point and it has reached a piece of a different color
+                        return 0;
+                    }
+                  }
+              }
+              break;
+  } 
+  return 1;
+}

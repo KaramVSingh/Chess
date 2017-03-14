@@ -17,13 +17,21 @@ int move(player_t *player, board_t *board){
 
         //it is an invalid move is (a) there is a piece of the same color at that spot (b) that spot is out of reach for the piece
         //(c) they are moving to the same space (d) none of your pieces are on the first coordinate (e) the player moves into a check
+        //(f) The coordinates are within the range of the board
 
         //TODO: check if the king is in check -
         n = check_status(board, player->piece_type);
         printf("Check_status: %d\n", n);
+
         //Check if their coordinates are equal
         if ((src_col == dst_col) && (src_row == dst_row)) {
           printf("Invalid: you must move your piece\n");
+          invalid_move = TRUE;
+        }
+
+        //checks if coordinates are withing board
+        else if (src_row < 1 || src_row > 8 || dst_row < 1 || dst_row > 8 || src_col > 'H' || src_col < 'A' || dst_col > 'H' || dst_col < 'A') {
+          printf("Invalid: must be within the board\n");
           invalid_move = TRUE;
         }
 
@@ -52,16 +60,37 @@ int move(player_t *player, board_t *board){
           invalid_move = FALSE;
 
 
+          //checks which piece is being moved, and if possible, updates its coordinates
           for(i = 0; i < 16; i++) {
             if(player->piece_type == WHITE) {
               if(board->pieces[WHITE][i].row == (8 - src_row) && board->pieces[WHITE][i].col == (src_col-65)) {
-                board->pieces[WHITE][i].row = 8 - dst_row;
-                board->pieces[WHITE][i].col = dst_col - 65;
+                //We need to check if the final position is valid and if there are any pieces in the way
+
+                if(check_movement(board, WHITE, i, 8 - dst_row, dst_col - 65) && check_collision(board, WHITE, i, 8 - dst_row, dst_col - 65)) {
+                  invalid_move = FALSE;
+                  board->pieces[WHITE][i].row = 8 - dst_row;
+                  board->pieces[WHITE][i].col = dst_col - 65;
+
+                } else {
+                  invalid_move = TRUE;
+                  printf("Invalid: That piece cannot move there/there is a piece in the way\n");
+
+                }
               }
             } else {
               if(board->pieces[BLACK][i].row == (8 - src_row) && board->pieces[BLACK][i].col == (src_col-65)) {
-                board->pieces[BLACK][i].row = 8 - dst_row;
-                board->pieces[BLACK][i].col = dst_col - 65;
+                //We need to check if the final position is valid and if there are any pieces in the way
+
+                if(check_movement(board, BLACK, i, 8 - dst_row, dst_col - 65) && check_collision(board, WHITE, i, 8 - dst_row, dst_col - 65)) {
+                  invalid_move = FALSE;
+                  board->pieces[WHITE][i].row = 8 - dst_row;
+                  board->pieces[WHITE][i].col = dst_col - 65;
+
+                } else {
+                  invalid_move = TRUE;
+                  printf("Invalid: That piece cannot move there/there is a piece in the way\n");
+
+                }
               }
             }
           }
