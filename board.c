@@ -793,7 +793,14 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                   printf("Take Piece!\n");
 
                   return 1;
-                } else {
+                } else if (board->pieces[piece_type][piece_number].row == 4 && board->board[row-1][col] == 'p') {
+                  //en passant:
+                  //TODO: take the piece
+                  printf("Take Piece!\n");
+
+                  return 1;
+                  }
+                else {
                   return 0;
                 }
               } else {
@@ -818,9 +825,15 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                   printf("Take Piece!\n");
 
                   return 1;
-                } else {
-                  return 0;
-                }
+                } else if (board->pieces[piece_type][piece_number].row == 3 && board->board[row+1][col] == 'P') {
+                  //en passant:
+                  //TODO: take the piece
+                  printf("Take Piece!\n");
+
+                    return 1;
+                  } else {
+                    return 0;
+                  } 
               } else {
                   for (i = 1; i <= distance; i++) {
                     if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
