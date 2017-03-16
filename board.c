@@ -262,63 +262,63 @@ int check_status(board_t *board, int color){
         case 'N':
         case 'n':
           if(!board->pieces[color][k].taken){
-            i = board->pieces[color][k].row += 3;
-            j = board->pieces[color][k].row += 2;
+            i = board->pieces[color][k].row += 2;
+            j = board->pieces[color][k].row += 1;
             if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
-              if(!check(board, color)) return 1;
-            }
-            board->pieces[color][k].row = row;
-            board->pieces[color][k].col = col;
-
-            i = board->pieces[color][k].row += 3;
-            j = board->pieces[color][k].row -= 2;
-            if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
-              if(!check(board, color)) return 1;
-            }
-            board->pieces[color][k].row = row;
-            board->pieces[color][k].col = col;
-
-            i = board->pieces[color][k].row -= 3;
-            j = board->pieces[color][k].row += 2;
-            if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
-              if(!check(board, color)) return 1;
-            }
-            board->pieces[color][k].row = row;
-            board->pieces[color][k].col = col;
-
-            i = board->pieces[color][k].row -= 3;
-            j = board->pieces[color][k].row -= 2;
-            if(i >= 0&& j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)) return 1;
             }
             board->pieces[color][k].row = row;
             board->pieces[color][k].col = col;
 
             i = board->pieces[color][k].row += 2;
-            j = board->pieces[color][k].row += 3;
-            if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
+            j = board->pieces[color][k].row -= 1;
+            if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)) return 1;
             }
             board->pieces[color][k].row = row;
             board->pieces[color][k].col = col;
 
             i = board->pieces[color][k].row -= 2;
-            j = board->pieces[color][k].row += 3;
+            j = board->pieces[color][k].row += 1;
             if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
               if(!check(board, color)) return 1;
             }
             board->pieces[color][k].row = row;
             board->pieces[color][k].col = col;
 
-            i = board->pieces[color][k].row += 2;
-            j = board->pieces[color][k].row -= 3;
+            i = board->pieces[color][k].row -= 2;
+            j = board->pieces[color][k].row -= 1;
+            if(i >= 0&& j >= 0 && (board->board[i][j] - shift) < 32){
+              if(!check(board, color)) return 1;
+            }
+            board->pieces[color][k].row = row;
+            board->pieces[color][k].col = col;
+
+            i = board->pieces[color][k].row += 1;
+            j = board->pieces[color][k].row += 2;
+            if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
+              if(!check(board, color)) return 1;
+            }
+            board->pieces[color][k].row = row;
+            board->pieces[color][k].col = col;
+
+            i = board->pieces[color][k].row += 1;
+            j = board->pieces[color][k].row -= 2;
+            if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
+              if(!check(board, color)) return 1;
+            }
+            board->pieces[color][k].row = row;
+            board->pieces[color][k].col = col;
+
+            i = board->pieces[color][k].row -= 1;
+            j = board->pieces[color][k].row += 2;
             if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)) return 1;
             }
             board->pieces[color][k].row = row;
             board->pieces[color][k].col = col;
 
-            i = board->pieces[color][k].row -= 3;
+            i = board->pieces[color][k].row -= 1;
             j = board->pieces[color][k].row -= 2;
             if(i >= 0 && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)) return 1;
@@ -535,21 +535,21 @@ int check(board_t *board, int color){
     }
   }
   //checking for knights
-  if(i+3 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+  if(i+2 < MAX_ROWS && j+1 < MAX_COLS && board->board[i+2][j+1] == ('N' + shift))
     return TRUE;
-  if(i+3 < MAX_ROWS && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+  if(i+2 < MAX_ROWS && j-1 >= 0 && board->board[i+2][j-1] == ('N' + shift))
     return TRUE;
-  if(i-3 >= 0 && j+2 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+  if(i-2 >= 0 && j+1 < MAX_COLS && board->board[i-2][j+1] == ('N' + shift))
     return TRUE;
-  if(i-3 >= 0 && j-2 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+  if(i-2 >= 0 && j-1 >= 0 && board->board[i-2][j-1] == ('N' + shift))
     return TRUE;
-  if(i+2 < MAX_ROWS && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+  if(i+1 < MAX_ROWS && j+2 < MAX_COLS && board->board[i+1][j+2] == ('N' + shift))
     return TRUE;
-  if(i+2 < MAX_ROWS && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+  if(i+1 < MAX_ROWS && j-2 >= 0 && board->board[i+1][j-2] == ('N' + shift))
     return TRUE;
-  if(i-2 >= 0 && j+3 < MAX_COLS && board->board[i+3][j+2] == ('K' + shift))
+  if(i-1 >= 0 && j+2 < MAX_COLS && board->board[i-1][j+2] == ('N' + shift))
     return TRUE;
-  if(i-3 >= 0 && j-3 >= 0 && board->board[i+3][j+2] == ('K' + shift))
+  if(i-1 >= 0 && j-2 >= 0 && board->board[i-1][j-2] == ('N' + shift))
     return TRUE;
 
   return 0;
@@ -627,18 +627,18 @@ int place_piece(board_t *board, char name, int row, int col){
 
 
 int check_movement(board_t *board, int piece_type, int piece_number, int row, int col) {
-  
+
   char type = board->pieces[piece_type][piece_number].name;
 
   switch (type) {
 
-    case 'K' : 
+    case 'K' :
     case 'k' :if (abs(board->pieces[piece_type][piece_number].row-row) <= 1 && abs(board->pieces[piece_type][piece_number].col-col) <= 1) {
                 return 1;
               }
               break;
-    case 'Q' : 
-    case 'q' :if (board->pieces[piece_type][piece_number].row == row || board->pieces[piece_type][piece_number].col == col || 
+    case 'Q' :
+    case 'q' :if (board->pieces[piece_type][piece_number].row == row || board->pieces[piece_type][piece_number].col == col ||
                   abs(board->pieces[piece_type][piece_number].row-row) == abs(board->pieces[piece_type][piece_number].col-col)) {
                 return 1;
               }
@@ -676,12 +676,12 @@ int check_movement(board_t *board, int piece_type, int piece_number, int row, in
                 return 1;
               }
               break;
-  } 
+  }
   return 0;
 }
 
 int check_collision(board_t *board, int piece_type, int piece_number, int row, int col) {
-  
+
   char type = board->pieces[piece_type][piece_number].name;
   int i, x, y, distance;
 
@@ -836,6 +836,6 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                   }
               }
               break;
-  } 
+  }
   return 1;
 }
