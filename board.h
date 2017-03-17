@@ -12,6 +12,7 @@ typedef struct{
   int col;
   int val;
   int taken;
+  int has_moved;
 } piece_t;
 
 typedef struct{

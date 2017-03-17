@@ -23,6 +23,11 @@ board_t *create_board(){
     result->pieces[BLACK][i+8].col = i;
     result->pieces[WHITE][i+8].val = 1;
     result->pieces[BLACK][i+8].val = 1;
+
+    result->pieces[WHITE][i].has_moved = FALSE;
+    result->pieces[WHITE][i+8].has_moved = FALSE;
+    result->pieces[BLACK][i].has_moved = FALSE;
+    result->pieces[BLACK][i+8].has_moved = FALSE;
   }
   result->pieces[WHITE][0].name = 'K';
   result->pieces[WHITE][0].col = 4;
@@ -635,6 +640,10 @@ int check_movement(board_t *board, int piece_type, int piece_number, int row, in
     case 'K' :
     case 'k' :if (abs(board->pieces[piece_type][piece_number].row-row) <= 1 && abs(board->pieces[piece_type][piece_number].col-col) <= 1) {
                 return 1;
+              } else if (col == 2 && board->pieces[piece_type][piece_number].has_moved == FALSE && board->pieces[piece_type][6].has_moved == FALSE) {
+                return 1;
+              } else if (col == 6 && board->pieces[piece_type][piece_number].has_moved == FALSE && board->pieces[piece_type][7].has_moved == FALSE) {
+                return 1;
               }
               break;
     case 'Q' :
@@ -717,7 +726,20 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
 
   switch (type) {
 
-    case 'K' :
+    case 'K' :if (distance > 1) {
+                if (col == 6 && board->pieces[piece_type][7].has_moved == FALSE) {
+                  if (board->board[0][5] == ' ' && board->board[0][6] == ' ') {
+                    return 2; 
+                  }
+
+                } else if (col == 2 && board->pieces[piece_type][6].has_moved == FALSE) {
+                    if (board->board[0][1] == ' ' && board->board[0][2] == ' ' && board->board[0][3] == ' ') {
+                      return 2;
+                    } else {
+                      return 0;
+                    }
+                  }
+              }
     case 'Q' :
     case 'R' :
     case 'B' :for (i = 1; i <= distance; i++) {
@@ -729,6 +751,8 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                     && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'z'
                     && board->pieces[piece_type][piece_number].row + i*y == row && board->pieces[piece_type][piece_number].col + i*x == col) {
                     //if it is the last point and it has reached a piece of a different color
+
+                    board->pieces[piece_type][piece_number].has_moved = TRUE;
 
                     //TODO: take the piece
                     printf("Take Piece!\n");
@@ -742,7 +766,19 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
               }
               break;
 
-    case 'k' :
+    case 'k' :if (distance > 1) {
+                if (col == 6 && board->pieces[piece_type][7].has_moved == FALSE) {
+                  if (board->board[0][5] == ' ' && board->board[0][6] == ' ') {
+                    return 2;
+                  }
+                } else if (col == 2 && board->pieces[piece_type][6].has_moved == FALSE) {
+                    if (board->board[0][1] == ' ' && board->board[0][2] == ' ' && board->board[0][3] == ' ') {
+                      return 2;
+                    } else {
+                      return 0;
+                    }
+                  }
+              }
     case 'q' :
     case 'r' :
     case 'b' :for (i = 1; i <= distance; i++) {
@@ -754,6 +790,8 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                     && board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] < 'Z'
                     && board->pieces[piece_type][piece_number].row + i*y == row && board->pieces[piece_type][piece_number].col + i*x == col) {
                     //if it is the last point and it has reached a piece of a different color
+
+                    board->pieces[piece_type][piece_number].has_moved = TRUE;
 
                     //TODO: take the piece
                     printf("Take Piece!\n");
@@ -850,5 +888,7 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
               }
               break;
   }
+
+  board->pieces[piece_type][piece_number].has_moved = TRUE;
   return 1;
 }
