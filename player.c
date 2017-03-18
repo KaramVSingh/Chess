@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "player.h"
 
 int move(player_t *player, board_t *board){
-  int n, src_row, dst_row, invalid_move = 0, i, castle, status;
+  int n, src_row, dst_row, invalid_move = 0, i, instruction, status, hold, opp_type;
   char src_col, dst_col;
 
   if(player->is_human){
@@ -10,6 +11,7 @@ int move(player_t *player, board_t *board){
     do{
       printf("Enter move: ");
       n = scanf("  %c%d to %c%d", &src_col, &src_row, &dst_col, &dst_row);
+      opp_type = abs(player->piece_type - 1);
       if(n == 2){
         //show potential moves for that piece
       }else if(n == 4){
@@ -21,7 +23,14 @@ int move(player_t *player, board_t *board){
 
         //TODO: check if the king is in check -
         n = check_status(board, player->piece_type);
-        printf("Check_status: %d\n", n);
+        if (n == -1) {
+          if (player->piece_type) {
+            printf("Checkmate! %s team wins!!\n", "WHITE");
+          } else {
+            printf("Checkmate! %s team wins!!\n", "BLACK");
+          }
+          return 0;
+        }
 
         //Check if their coordinates are equal
         if ((src_col == dst_col) && (src_row == dst_row)) {
@@ -59,53 +68,60 @@ int move(player_t *player, board_t *board){
         else {
           invalid_move = FALSE;
 
-          castle = 0;
+          instruction = 0;
 
           //checks which piece is being moved, and if possible, updates its coordinates
           for(i = 0; i < 16; i++) {
-            if(player->piece_type == WHITE) {
-              if(board->pieces[WHITE][i].row == (8 - src_row) && board->pieces[WHITE][i].col == (src_col-65)) {
+              if(board->pieces[player->piece_type][i].row == (8 - src_row) && board->pieces[player->piece_type][i].col == (src_col-65)) {
                 //We need to check if the final position is valid and if there are any pieces in the way
 
-                if(check_movement(board, WHITE, i, 8 - dst_row, dst_col - 65) && (castle = check_collision(board, WHITE, i, 8 - dst_row, dst_col - 65)) > 0) {
+                if(check_movement(board, player->piece_type, i, 8 - dst_row, dst_col - 65) && (instruction = check_collision(board, player->piece_type, i, 8 - dst_row, dst_col - 65)) > 0) {
                   invalid_move = FALSE;
-                  board->pieces[WHITE][i].row = 8 - dst_row;
-                  board->pieces[WHITE][i].col = dst_col - 65;
+                  board->pieces[player->piece_type][i].row = 8 - dst_row;
+                  board->pieces[player->piece_type][i].col = dst_col - 65;
 
-                  if (castle == 2) {
+                  if (instruction == 2) {
                     if (dst_col == 'C') {
-                      board->pieces[WHITE][6].col = 3;
+                      board->pieces[player->piece_type][6].col = 3;
                     }
                     if (dst_col == 'G') {
-                      board->pieces[WHITE][7].col = 5;
+                      board->pieces[player->piece_type][7].col = 5;
                     }
                   }
 
-                  if ((status = check_status(board, WHITE)) != 0) {
+                  if (instruction == 3) {
+                    hold = take_piece(board, player->piece_type, i);
+                  }
+
+                  if ((status = check_status(board, player->piece_type)) != 0) {
                     invalid_move = TRUE;
 
-                    if (castle == 1) {
-                      board->pieces[WHITE][i].row = 8 - src_row;
-                      board->pieces[WHITE][i].col = src_col - 65;
-                    } else {
-                      if (board->pieces[WHITE][i].col == 2) {
-                        board->pieces[WHITE][i].col = src_col - 65;
-                        board->pieces[WHITE][6].col = 0;
-                      } else if (board->pieces[WHITE][i].col == 6) {
-                        board->pieces[WHITE][i].col = src_col - 65;
-                        board->pieces[WHITE][7].col = 7;
+                    if (instruction == 1) {
+                      board->pieces[player->piece_type][i].row = 8 - src_row;
+                      board->pieces[player->piece_type][i].col = src_col - 65;
+                    } else if (instruction == 2) {
+                      if (board->pieces[player->piece_type][i].col == 2) {
+                        board->pieces[player->piece_type][i].col = src_col - 65;
+                        board->pieces[player->piece_type][6].col = 0;
+                      } else if (board->pieces[player->piece_type][i].col == 6) {
+                        board->pieces[player->piece_type][i].col = src_col - 65;
+                        board->pieces[player->piece_type][7].col = 7;
                       }
+                    } else if (instruction == 3) {
+                      board->pieces[player->piece_type][i].col = src_col - 65;
+                      board->pieces[player->piece_type][i].row = 8 - src_row;
+                      board->pieces[opp_type][hold].taken = FALSE;
                     }
 
                     printf("Invalid: Cannot move into check!!\n");
                   } else {
-                    if (board->pieces[WHITE][i].col == 6 && castle == 2) {
-                      board->pieces[WHITE][i].has_moved = TRUE;
-                      board->pieces[WHITE][7].has_moved = TRUE;
+                    if (board->pieces[player->piece_type][i].col == 6 && instruction == 2) {
+                      board->pieces[player->piece_type][i].has_moved = TRUE;
+                      board->pieces[player->piece_type][7].has_moved = TRUE;
                     }
-                    if (board->pieces[WHITE][i].col == 2 && castle == 2) {
-                      board->pieces[WHITE][i].has_moved = TRUE;
-                      board->pieces[WHITE][6].has_moved = TRUE;
+                    if (board->pieces[player->piece_type][i].col == 2 && instruction == 2) {
+                      board->pieces[player->piece_type][i].has_moved = TRUE;
+                      board->pieces[player->piece_type][6].has_moved = TRUE;
                     }
                   }
 
@@ -115,63 +131,10 @@ int move(player_t *player, board_t *board){
 
                 }
               }
-            } else {
-              if(board->pieces[BLACK][i].row == (8 - src_row) && board->pieces[BLACK][i].col == (src_col-65)) {
-                //We need to check if the final position is valid and if there are any pieces in the way
-
-                if(check_movement(board, BLACK, i, 8 - dst_row, dst_col - 65) && (castle = check_collision(board, BLACK, i, 8 - dst_row, dst_col - 65)) > 0) {
-                  invalid_move = FALSE;
-                  board->pieces[BLACK][i].row = 8 - dst_row;
-                  board->pieces[BLACK][i].col = dst_col - 65;
-
-                  if (castle == 2) {
-                    if (dst_col == 'C') {
-                      board->pieces[BLACK][6].col = 3;
-                    }
-                    if (dst_col == 'G') {
-                      board->pieces[BLACK][7].col = 5;
-                    }
-                  }
-
-                  if ((status = check_status(board, BLACK)) != 0) {
-                    invalid_move = TRUE;
-
-                    if (castle == 1) {
-                      board->pieces[BLACK][i].row = 8 - src_row;
-                      board->pieces[BLACK][i].col = src_col - 65;
-                    } else {
-                      if (board->pieces[BLACK][i].col == 2) {
-                        board->pieces[BLACK][i].col = src_col - 65;
-                        board->pieces[BLACK][6].col = 0;
-                      } else if (board->pieces[BLACK][i].col == 6) {
-                        board->pieces[BLACK][i].col = src_col - 65;
-                        board->pieces[BLACK][7].col = 7;
-                      }
-                    }
-
-                    printf("Invalid: Cannot move into check!!\n");
-                  } else {
-                    if (board->pieces[BLACK][i].col == 6 && castle == 2) {
-                      board->pieces[BLACK][i].has_moved = TRUE;
-                      board->pieces[BLACK][7].has_moved = TRUE;
-                    }
-                    if (board->pieces[BLACK][i].col == 2 && castle == 2) {
-                      board->pieces[BLACK][i].has_moved = TRUE;
-                      board->pieces[BLACK][6].has_moved = TRUE;
-                    }
-                  }
-
-                } else {
-                  invalid_move = TRUE;
-                  printf("Invalid: That piece cannot move there/there is a piece in the way\n");
-
-                }
-              }
+           
             }
+            draw(board);
           }
-
-          draw(board);
-        }
 
       }else{
         printf("Format error. Proper format is: a1 to a2 OR e4\n");
