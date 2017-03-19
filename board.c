@@ -113,19 +113,40 @@ void update_board(board_t *board){
   }
 }
 void draw(board_t * board){
-  int i, j;
+  int i, j, white, black, white_done, black_done;
   char c;
 
   update_board(board);
 
-  printf(" ___ ___ ___ ___ ___ ___ ___ ___\n");
+  black = white = 0;
+  printf(" ___ ___ ___ ___ ___ ___ ___ ___");
+  printf("      White   Black\n");
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       c = board->board[i][j];
       printf("| %c ",c);
     }
-    printf("| %d\n", 8-i);
-    printf("|___|___|___|___|___|___|___|___|\n");
+    printf("| %d", 8-i);
+    white_done = black_done = 0;
+
+    while(white_done < 2 && white < 16){
+      if(board->pieces[WHITE][white].taken){
+        white_done++;
+        printf("   %c", board->pieces[WHITE][white].name);
+      }
+      white++;
+    }
+    for( ; white_done < 2; white_done++){
+      printf("    ");
+    }
+    while(black_done < 2 && black < 16){
+      if(board->pieces[BLACK][black].taken){
+        black_done++;
+        printf("   %c", board->pieces[BLACK][black].name);
+      }
+      black++;
+    }
+    printf("\n|___|___|___|___|___|___|___|___|\n");
 
   }
   printf("  A   B   C   D   E   F   G   H \n");
@@ -729,7 +750,7 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
     case 'K' :if (distance > 1) {
                 if (col == 6 && board->pieces[piece_type][7].has_moved == FALSE) {
                   if (board->board[0][5] == ' ' && board->board[0][6] == ' ') {
-                    return 2; 
+                    return 2;
                   }
 
                 } else if (col == 2 && board->pieces[piece_type][6].has_moved == FALSE) {
@@ -857,7 +878,7 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                     return 4;
                   } else {
                     return 0;
-                  } 
+                  }
               } else {
                   for (i = 1; i <= distance; i++) {
                     if (board->board[board->pieces[piece_type][piece_number].row + i*y][board->pieces[piece_type][piece_number].col + i*x] > 'a'
