@@ -8,7 +8,7 @@ int move(player_t *player, board_t *board){
 
   if(player->is_human){
     printf("Enter 2 coordinates to make a move, or 1 to see potential moves for that piece\n");
-    do{
+    do {
       printf("Enter move: ");
       n = scanf("  %c%d to %c%d", &src_col, &src_row, &dst_col, &dst_row);
       opp_type = abs(player->piece_type - 1);
@@ -22,8 +22,7 @@ int move(player_t *player, board_t *board){
         //(f) The coordinates are within the range of the board
 
         //TODO: check if the king is in check -
-        n = check_status(board, player->piece_type);
-        if (n == -1) {
+        if (check_status(board, player->piece_type) == -1) {
           if (player->piece_type) {
             printf("Checkmate! %s team wins!!\n", "WHITE");
           } else {
@@ -90,7 +89,15 @@ int move(player_t *player, board_t *board){
                   }
 
                   if (instruction == 3) {
-                    hold = take_piece(board, player->piece_type, i);
+                    hold = take_piece(board, player->piece_type, i, 0);
+                  }
+
+                  if (instruction == 4) {
+                    if ((dst_col - 65) - (src_col - 65) > 0) {
+                      hold = take_piece(board, player->piece_type, i, -1);
+                    } else {
+                      hold = take_piece(board, player->piece_type, i, 1);
+                    }
                   }
 
                   if ((status = check_status(board, player->piece_type)) != 0) {
@@ -107,12 +114,11 @@ int move(player_t *player, board_t *board){
                         board->pieces[player->piece_type][i].col = src_col - 65;
                         board->pieces[player->piece_type][7].col = 7;
                       }
-                    } else if (instruction == 3) {
+                    } else if (instruction == 3 || instruction == 4) {
                       board->pieces[player->piece_type][i].col = src_col - 65;
                       board->pieces[player->piece_type][i].row = 8 - src_row;
                       board->pieces[opp_type][hold].taken = FALSE;
-                    }
-
+                    } 
                     printf("Invalid: Cannot move into check!!\n");
                   } else {
                     if (board->pieces[player->piece_type][i].col == 6 && instruction == 2) {
@@ -141,5 +147,6 @@ int move(player_t *player, board_t *board){
       }
     }while((n != 2 && n != 4) || invalid_move);
   }
-  return 0;
+
+  return 1;
 }

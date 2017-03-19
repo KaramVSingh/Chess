@@ -36,4 +36,4 @@ int check_movement(board_t *board, int piece_type, int piece_number, int row, in
 //this function checks if the piece has any pieces in its way <- this function can be inclded in "check Movement", i just kept it seperate for now
 int check_collision(board_t *board, int piece_type, int piece_number, int row, int col);
 //this function simply removes a piece and adds it to the taken list
-int take_piece(board_t *board, int piece_type, int piece_number);
+int take_piece(board_t *board, int piece_type, int piece_number, int enPassant);

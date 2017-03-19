@@ -74,7 +74,6 @@ int main(int argc, char** argv){
   play = 1;
   printf("Beginning game\n");
   while(play){
-    draw(board);
     play = move(player1, board);
     if(play){
       play = move(player2, board);
