@@ -844,7 +844,9 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                 if (board->board[row][col] > 'a' && board->board[row][col] < 'z') {
                   //TODO: take the piece
                   return 3;
-                } else if (board->pieces[piece_type][piece_number].row == 4 && board->board[row+1][col] == 'p') {
+                } else if (board->pieces[piece_type][piece_number].row == 4 && (board->board[board->pieces[piece_type][piece_number].row][board->pieces[piece_type][piece_number].col+1] == 'p' 
+                          || board->board[board->pieces[piece_type][piece_number].row][board->pieces[piece_type][piece_number].col-1] == 'p')
+                          && board->board[row][col] == ' ') {
                   //en passant:
                   //TODO: take the piece
                   return 4;
@@ -872,7 +874,9 @@ int check_collision(board_t *board, int piece_type, int piece_number, int row, i
                 if (board->board[row][col] > 'A' && board->board[row][col] < 'Z') {
                   //TODO: take the piece
                   return 3;
-                } else if (board->pieces[piece_type][piece_number].row == 3 && board->board[row-1][col] == 'P') {
+                } else if (board->pieces[piece_type][piece_number].row == 4 && (board->board[board->pieces[piece_type][piece_number].row][board->pieces[piece_type][piece_number].col+1] == 'p' 
+                          || board->board[board->pieces[piece_type][piece_number].row][board->pieces[piece_type][piece_number].col-1] == 'P')
+                          && board->board[row][col] == ' ') {
                   //en passant:
                   //TODO: take the piece
                     return 4;
@@ -916,17 +920,15 @@ int take_piece(board_t *board, int piece_type, int piece_number, int enPassant) 
       }
     }
   } else {
-    if (enPassant == 1) {
-      for (i = 0; i < 16; i++) {
-        if (board->pieces[opp_type][i].row == row && board->pieces[opp_type][i].col == col + 1) {
+    for (i = 0; i < 16; i++) {
+      if (board->pieces[piece_type][piece_number].name == 'P') {
+        if (board->pieces[opp_type][i].row == row - 1 && board->pieces[opp_type][i].col == col) {
           board->pieces[opp_type][i].taken = TRUE;
           return i;
         }
       }
-    }
-    if (enPassant == -1) {
-      for (i = 0; i < 16; i++) {
-        if (board->pieces[opp_type][i].row == row && board->pieces[opp_type][i].col == col - 1) {
+      if (board->pieces[piece_type][piece_number].name == 'p') {
+        if (board->pieces[opp_type][i].row == row + 1 && board->pieces[opp_type][i].col == col) {
           board->pieces[opp_type][i].taken = TRUE;
           return i;
         }

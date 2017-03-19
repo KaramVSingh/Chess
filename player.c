@@ -71,7 +71,7 @@ int move(player_t *player, board_t *board){
 
           //checks which piece is being moved, and if possible, updates its coordinates
           for(i = 0; i < 16; i++) {
-              if(board->pieces[player->piece_type][i].row == (8 - src_row) && board->pieces[player->piece_type][i].col == (src_col-65)) {
+              if(board->pieces[player->piece_type][i].row == (8 - src_row) && board->pieces[player->piece_type][i].col == (src_col-65) && board->pieces[player->piece_type][i].taken == FALSE) {
                 //We need to check if the final position is valid and if there are any pieces in the way
 
                 if(check_movement(board, player->piece_type, i, 8 - dst_row, dst_col - 65) && (instruction = check_collision(board, player->piece_type, i, 8 - dst_row, dst_col - 65)) > 0) {
@@ -89,15 +89,11 @@ int move(player_t *player, board_t *board){
                   }
 
                   if (instruction == 3) {
-                    hold = take_piece(board, player->piece_type, i, 0);
+                    hold = take_piece(board, player->piece_type, i, FALSE);
                   }
 
                   if (instruction == 4) {
-                    if ((dst_col - 65) - (src_col - 65) > 0) {
-                      hold = take_piece(board, player->piece_type, i, -1);
-                    } else {
-                      hold = take_piece(board, player->piece_type, i, 1);
-                    }
+                    hold = take_piece(board, player->piece_type, i, TRUE);
                   }
 
                   if ((status = check_status(board, player->piece_type)) != 0) {
