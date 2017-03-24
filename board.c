@@ -7,76 +7,24 @@ int check(board_t *board, int color);
 board_t *create_board(){
   board_t *result;
   int i, j, k;
+  int values[] = {0, 9, 3, 3, 3, 3, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1};
+  int cols[] = {4, 3, 2, 5, 1, 6, 0, 7, 0, 1, 2, 3, 4, 5, 6, 7};
+  char names[] = {'K', 'Q', 'B', 'B', 'N', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
 
   result = (board_t *)malloc(sizeof(board_t));
-  for(i = 0; i< 8; i++){
-    result->pieces[WHITE][i].row = 0;
-    result->pieces[WHITE][i+8].row = 1;
-    result->pieces[WHITE][i].taken = result->pieces[WHITE][i+8].taken = 0;
-    result->pieces[BLACK][i].row = 7;
-    result->pieces[BLACK][i+8].row = 6;
-    result->pieces[BLACK][i].taken = result->pieces[BLACK][i+8].taken = 0;
 
-    result->pieces[WHITE][i+8].name = 'P';
-    result->pieces[WHITE][i+8].col = i;
-    result->pieces[BLACK][i+8].name = 'p';
-    result->pieces[BLACK][i+8].col = i;
-    result->pieces[WHITE][i+8].val = 1;
-    result->pieces[BLACK][i+8].val = 1;
-
-    result->pieces[WHITE][i].has_moved = FALSE;
-    result->pieces[WHITE][i+8].has_moved = FALSE;
-    result->pieces[BLACK][i].has_moved = FALSE;
-    result->pieces[BLACK][i+8].has_moved = FALSE;
+  for(i = 0; i < 16; i++){
+    result->pieces[WHITE][i].row = i/8;
+    result->pieces[WHITE][i].col = cols[i];
+    result->pieces[WHITE][i].name = names[i];
+    result->pieces[WHITE][i].val = values[i];
+    result->pieces[WHITE][i].taken = 0;
+    result->pieces[BLACK][i].row = 7 - i/8;
+    result->pieces[BLACK][i].col = cols[i];
+    result->pieces[BLACK][i].name = names[i] + 32;
+    result->pieces[BLACK][i].val = values[i];
+    result->pieces[BLACK][i].taken = 0;
   }
-  result->pieces[WHITE][0].name = 'K';
-  result->pieces[WHITE][0].col = 4;
-  result->pieces[WHITE][0].val = 0;
-  result->pieces[WHITE][1].name = 'Q';
-  result->pieces[WHITE][1].col = 3;
-  result->pieces[WHITE][1].val = 9;
-  result->pieces[WHITE][2].name = 'B';
-  result->pieces[WHITE][2].col = 2;
-  result->pieces[WHITE][2].val = 3;
-  result->pieces[WHITE][3].name = 'B';
-  result->pieces[WHITE][3].col = 5;
-  result->pieces[WHITE][3].val = 3;
-  result->pieces[WHITE][4].name = 'N';
-  result->pieces[WHITE][4].col = 1;
-  result->pieces[WHITE][4].val = 3;
-  result->pieces[WHITE][5].name = 'N';
-  result->pieces[WHITE][5].col = 6;
-  result->pieces[WHITE][5].val = 3;
-  result->pieces[WHITE][6].name = 'R';
-  result->pieces[WHITE][6].col = 0;
-  result->pieces[WHITE][6].val = 5;
-  result->pieces[WHITE][7].name = 'R';
-  result->pieces[WHITE][7].col = 7;
-  result->pieces[WHITE][7].val = 5;
-  result->pieces[BLACK][0].name = 'k';
-  result->pieces[BLACK][0].col = 4;
-  result->pieces[BLACK][0].val = 0;
-  result->pieces[BLACK][1].name = 'q';
-  result->pieces[BLACK][1].col = 3;
-  result->pieces[BLACK][1].val = 9;
-  result->pieces[BLACK][2].name = 'b';
-  result->pieces[BLACK][2].col = 2;
-  result->pieces[BLACK][2].val = 3;
-  result->pieces[BLACK][3].name = 'b';
-  result->pieces[BLACK][3].col = 5;
-  result->pieces[BLACK][3].val = 3;
-  result->pieces[BLACK][4].name = 'n';
-  result->pieces[BLACK][4].col = 1;
-  result->pieces[BLACK][4].val = 3;
-  result->pieces[BLACK][5].name = 'n';
-  result->pieces[BLACK][5].col = 6;
-  result->pieces[BLACK][5].val = 3;
-  result->pieces[BLACK][6].name = 'r';
-  result->pieces[BLACK][6].col = 0;
-  result->pieces[BLACK][6].val = 5;
-  result->pieces[BLACK][7].name = 'r';
-  result->pieces[BLACK][7].col = 7;
-  result->pieces[BLACK][7].val = 5;
 
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
@@ -510,7 +458,7 @@ int check_status(board_t *board, int color){
               board->pieces[color][k].row = row;
               board->pieces[color][k].col = col;
               return 1;
-            } 
+            }
             board->pieces[color][k].row--;
             board->pieces[color][k].col--;
           }
