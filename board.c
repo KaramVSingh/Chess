@@ -123,7 +123,7 @@ int check_status(board_t *board, int color){
                 board->pieces[color][k].row < MAX_ROWS && board->pieces[color][k].col < MAX_COLS){
                   if((board->board[i][j] - shift) < 32 &&
                     !check(board, color)){
-                      return_val = 1;
+                      return_val = CHECK;
                     }
               }
               board->pieces[color][k].row -= i;
@@ -140,7 +140,7 @@ int check_status(board_t *board, int color){
               j = board->pieces[color][k].col;
               if(i >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -155,7 +155,7 @@ int check_status(board_t *board, int color){
               j = board->pieces[color][k].col;
               if(i < MAX_ROWS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -170,7 +170,7 @@ int check_status(board_t *board, int color){
               j = --board->pieces[color][k].col;
               if(j >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -185,7 +185,7 @@ int check_status(board_t *board, int color){
               j = ++board->pieces[color][k].col;
               if(j < MAX_COLS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)) {
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -203,7 +203,7 @@ int check_status(board_t *board, int color){
               j = ++board->pieces[color][k].col;
               if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -219,7 +219,7 @@ int check_status(board_t *board, int color){
               j = --board->pieces[color][k].col;
               if(i >= 0 && j >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -235,7 +235,7 @@ int check_status(board_t *board, int color){
               j = --board->pieces[color][k].col;
               if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -251,7 +251,7 @@ int check_status(board_t *board, int color){
               j = ++board->pieces[color][k].col;
               if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -267,7 +267,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row += 1;
             if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -277,7 +277,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row -= 1;
             if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -287,7 +287,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row += 1;
             if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -297,7 +297,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row -= 1;
             if(i >= 0&& j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -307,7 +307,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row += 2;
             if(i < MAX_ROWS && j < MAX_COLS && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -317,7 +317,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row -= 2;
             if(i >= 0 && j < MAX_COLS && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -327,7 +327,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row += 2;
             if(i < MAX_ROWS && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -337,7 +337,7 @@ int check_status(board_t *board, int color){
             j = board->pieces[color][k].row -= 2;
             if(i >= 0 && j >= 0 && (board->board[i][j] - shift) < 32){
               if(!check(board, color)){
-                return_val = 1;
+                return_val = CHECK;
               }
             }
             board->pieces[color][k].row = row;
@@ -354,7 +354,7 @@ int check_status(board_t *board, int color){
               j = board->pieces[color][k].col;
               if(i >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -370,7 +370,7 @@ int check_status(board_t *board, int color){
               j = --board->pieces[color][k].col;
               if(j >= 0 && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -386,7 +386,7 @@ int check_status(board_t *board, int color){
               j = board->pieces[color][k].col;
               if(i < MAX_ROWS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -402,7 +402,7 @@ int check_status(board_t *board, int color){
               j = ++board->pieces[color][k].col;
               if(j < MAX_COLS && (board->board[i][j] - shift) < 32){
                 if(!check(board, color)){
-                  return_val = 1;
+                  return_val = CHECK;
                   done = 1;
                 }
               }else{
@@ -417,7 +417,7 @@ int check_status(board_t *board, int color){
             i = ++board->pieces[color][k].row;
             j = board->pieces[color][k].col;
             if(i < MAX_ROWS && board->board[i][j] == 32 && !check(board, color)){
-              return_val = 1;
+              return_val = CHECK;
             }
             j = --board->pieces[color][k].col;
             if(j >= 0 && board->board[i][j] > 96 && !check(board, color)){
@@ -437,12 +437,12 @@ int check_status(board_t *board, int color){
       board->pieces[color][k].col = col;
       update_board(board);
       if(return_val){
-        return 1;
+        return CHECK;
       }
     }
-    return -1;
+    return -CHECKMATE;
   }
-  return 0;
+  return NO_CHECK;
 }
 
 int check(board_t *board, int color){

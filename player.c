@@ -22,7 +22,7 @@ int move(player_t *player, board_t *board){
         //(f) The coordinates are within the range of the board
 
         //TODO: check if the king is in check -
-        if (check_status(board, player->piece_type) == -1) {
+        if (check_status(board, player->piece_type) == CHECKMATE) {
           if (player->piece_type) {
             printf("Checkmate! %s team wins!!\n", "WHITE");
           } else {
@@ -96,7 +96,7 @@ int move(player_t *player, board_t *board){
                     hold = take_piece(board, player->piece_type, i, TRUE);
                   }
 
-                  if ((status = check_status(board, player->piece_type)) != 0) {
+                  if ((status = check_status(board, player->piece_type)) != NO_CHECK) {
                     invalid_move = TRUE;
 
                     if (instruction == 1) {
@@ -114,7 +114,7 @@ int move(player_t *player, board_t *board){
                       board->pieces[player->piece_type][i].col = src_col - 65;
                       board->pieces[player->piece_type][i].row = 8 - src_row;
                       board->pieces[opp_type][hold].taken = FALSE;
-                    } 
+                    }
                     printf("Invalid: Cannot move into check!!\n");
                   } else {
                     if (board->pieces[player->piece_type][i].col == 6 && instruction == 2) {
@@ -133,7 +133,7 @@ int move(player_t *player, board_t *board){
 
                 }
               }
-           
+
             }
             draw(board);
           }

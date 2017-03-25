@@ -4,6 +4,9 @@
 #define BLACK 0
 #define TRUE 1
 #define FALSE 0
+#define CHECK 1
+#define CHECKMATE -1
+#define NO_CHECK 0
 
 
 typedef struct{
