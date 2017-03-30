@@ -1,7 +1,8 @@
 #define MAX_ROWS 8
 #define MAX_COLS 8
-#define WHITE 1
-#define BLACK 0
+#define WHITE 0
+#define BLACK 1
+#define EMPTY -1
 #define TRUE 1
 #define FALSE 0
 #define CHECK 1
@@ -11,18 +12,19 @@
 
 typedef struct{
   char name;
-  int row;
-  int col;
   int val;
   int taken;
+  int color;
   int has_moved;
+  int threatened;
 } piece_t;
 
 typedef struct{
-  char board[8][8];
+  piece_t board[8][8];
   //made this a type in case there are other properties we want to add
   piece_t pieces[2][16];
 } board_t;
+
 
 board_t * create_board();
 

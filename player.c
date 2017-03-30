@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include "player.h"
 
-int move(player_t *player, board_t *board){
+int move(player_t *player, piece_t *board){
   int n, src_row, dst_row, invalid_move = 0, i, instruction, status, hold, opp_type;
-  char src_col, dst_col;
+  int src_col, dst_col;
 
   if(player->is_human){
     printf("Enter 2 coordinates to make a move, or 1 to see potential moves for that piece\n");
@@ -38,27 +38,23 @@ int move(player_t *player, board_t *board){
         }
 
         //checks if coordinates are withing board
-        else if (src_row < 1 || src_row > 8 || dst_row < 1 || dst_row > 8 || src_col > 'H' || src_col < 'A' || dst_col > 'H' || dst_col < 'A') {
+        src_col = src_col%32 - 1;
+        dst_col = dst_col%32 - 1;
+        src_row -= 1;
+        dst_row -= 1;
+        else if (src_row < 0 || src_row > 7 || dst_row < 0 || dst_row > 7 || src_col > 7 || src_col < 0 || dst_col > 7 || dst_col < 0) {
           printf("Invalid: must be within the board\n");
           invalid_move = TRUE;
         }
 
         //check if initial coordinate is your color
-        else if ((board->board[8-src_row][src_col-65] < 'a') && player->piece_type == BLACK) {
-          printf("Invalid: must select your piece with initial coordinate\n");
-          invalid_move = TRUE;
-        }
-        else if (((board->board[8-src_row][src_col-65] > 'Z') || (board->board[8-src_row][src_col-65]) < 'A') && player->piece_type == WHITE) {
+        else if ((board->board[src_row][src_col].color == player->piece_type) {
           printf("Invalid: must select your piece with initial coordinate\n");
           invalid_move = TRUE;
         }
 
         //checks if move points to a piece of the same color
-        else if ((board->board[8-dst_row][dst_col-65] > 'a') && player->piece_type == BLACK) {
-          printf("Invalid: cannot place piece where a piece of your color stands\n");
-          invalid_move = TRUE;
-        }
-        else if (((board->board[8-dst_row][dst_col-65] > 'A') && ((board->board[8-dst_row][dst_col-65] < 'Z')) && player->piece_type == WHITE)) {
+        else if (board->board[dst_row][dst_col].color == player->piece_type) {
           printf("Invalid: cannot place piece where a piece of your color stands\n");
           invalid_move = TRUE;
         }
@@ -71,7 +67,7 @@ int move(player_t *player, board_t *board){
 
           //checks which piece is being moved, and if possible, updates its coordinates
           for(i = 0; i < 16; i++) {
-              if(board->pieces[player->piece_type][i].row == (8 - src_row) && board->pieces[player->piece_type][i].col == (src_col-65) && board->pieces[player->piece_type][i].taken == FALSE) {
+              if(board->pieces[player->piece_type][i].taken == FALSE) {
                 //We need to check if the final position is valid and if there are any pieces in the way
 
                 if(check_movement(board, player->piece_type, i, 8 - dst_row, dst_col - 65) && (instruction = check_collision(board, player->piece_type, i, 8 - dst_row, dst_col - 65)) > 0) {

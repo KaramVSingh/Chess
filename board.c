@@ -4,41 +4,44 @@
 
 int check(board_t *board, int color);
 
-board_t *create_board(){
-  board_t *result;
+piece_t **create_board(){
+  piece_t board[8][8];
   int i, j, k;
   int values[] = {0, 9, 3, 3, 3, 3, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1};
   int cols[] = {4, 3, 2, 5, 1, 6, 0, 7, 0, 1, 2, 3, 4, 5, 6, 7};
-  char names[] = {'K', 'Q', 'B', 'B', 'N', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
+  char names[] = {'R', 'N', 'B', 'Q','K', 'B', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
 
   result = (board_t *)malloc(sizeof(board_t));
 
-  for(i = 0; i < 16; i++){
-    result->pieces[WHITE][i].row = i/8;
-    result->pieces[WHITE][i].col = cols[i];
-    result->pieces[WHITE][i].name = names[i];
-    result->pieces[WHITE][i].val = values[i];
-    result->pieces[WHITE][i].taken = 0;
-    result->pieces[BLACK][i].row = 7 - i/8;
-    result->pieces[BLACK][i].col = cols[i];
-    result->pieces[BLACK][i].name = names[i] + 32;
-    result->pieces[BLACK][i].val = values[i];
-    result->pieces[BLACK][i].taken = 0;
-  }
+  for(i = 0; i < 2; i++){
+    for(j = 0; j < 8; j++){
+      result->board[i][j].name = names[j + i*8] + 32;
+      result->board[i][j].val = values[j + i*8];
+      result->board[i][j].taken = 0;
+      result->board[i][j].color = BLACK;
+      result->board[i][j].has_moved = 0;
+      result->board[i][j].threatened = 0;
 
-  for(i = 0; i < MAX_ROWS; i++){
-    for(j = 0; j < MAX_COLS; j++){
-      result->board[i][j] = ' ';
+      result->board[7-i][j].name = names[j + i*8];
+      result->board[7-i][j].val = values[j + i*8];
+      result->board[7-i][j].taken = 0;
+      result->board[7-i][j].color = WHITE;
+      result->board[7-i][j].has_moved = 0;
+      result->board[7-i][j].threatened = 0;
     }
   }
-  for(k = 0; k < 16; k++){
-    i = result->pieces[WHITE][k].row;
-    j = result->pieces[WHITE][k].col;
-    result->board[i][j] = result->pieces[WHITE][k].name;
-    i = result->pieces[BLACK][k].row;
-    j = result->pieces[BLACK][k].col;
-    result->board[i][j] = result->pieces[BLACK][k].name;
+
+  for(i = 2; i < 6; i++){
+    for(j = 0; j < 8; j++){
+      result->board[i][j].name = ' ';
+      result->board[i][j].val = 0;
+      result->board[i][j].taken = 0;
+      result->board[i][j].color = EMPTY;
+      result->board[i][j].has_moved = 0;
+      result->board[i][j].threatened = 0;
+    }
   }
+
 
   return result;
 }
