@@ -142,6 +142,8 @@ int move(player_t *player, board_t *board){
         printf("Format error. Proper format is: a1 to a2 OR e4\n");
       }
     }while((n != 2 && n != 4) || invalid_move);
+  }else{
+    return make_move(board);
   }
 
   return 1;

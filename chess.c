@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ai.h"
 #include "player.h"
 
 int main(int argc, char** argv){
@@ -20,11 +21,13 @@ int main(int argc, char** argv){
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
     player2->piece_type = BLACK;
+    init_ai();
   } else if(num_players == 1){
     player1->is_human = TRUE;
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
     player2->piece_type = BLACK;
+    init_ai();
   }else{
     player1->is_human = TRUE;
     player1->piece_type = WHITE;
