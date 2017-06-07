@@ -4,14 +4,17 @@
 
 int check(board_t *board, int color);
 
-piece_t **create_board(){
+board_t *create_board(){
+  board_t *result;
   piece_t board[8][8];
   int i, j, k;
-  int values[] = {0, 9, 3, 3, 3, 3, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1};
+  int values[] = {5, 3, 3, 9, 1000, 3, 3, 5, 1, 1, 1, 1, 1, 1, 1, 1};
   int cols[] = {4, 3, 2, 5, 1, 6, 0, 7, 0, 1, 2, 3, 4, 5, 6, 7};
-  char names[] = {'R', 'N', 'B', 'Q','K', 'B', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
+  char names[] = {'R', 'N', 'B', 'Q','K', 'B', 'N', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
 
   result = (board_t *)malloc(sizeof(board_t));
+  result->board = (piece_t *)malloc(64*sizeof(piece_t));
+  result->pieces = (piece_t *)malloc(16*sizeof(piece_t));
 
   for(i = 0; i < 2; i++){
     for(j = 0; j < 8; j++){

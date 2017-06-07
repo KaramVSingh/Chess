@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "player.h"
 
-int move(player_t *player, piece_t *board){
+int move(player_t *player, board_t *board){
   int n, src_row, dst_row, invalid_move = 0, i, instruction, status, hold, opp_type;
   int src_col, dst_col;
 
@@ -10,7 +10,7 @@ int move(player_t *player, piece_t *board){
     printf("Enter 2 coordinates to make a move, or 1 to see potential moves for that piece\n");
     do {
       printf("Enter move: ");
-      n = scanf("  %c%d to %c%d", &src_col, &src_row, &dst_col, &dst_row);
+      n = scanf("  %c%d to %c%d", (char *) &src_col, &src_row, (char *) &dst_col, &dst_row);
       opp_type = abs(player->piece_type - 1);
       if(n == 2){
         //show potential moves for that piece
@@ -42,13 +42,13 @@ int move(player_t *player, piece_t *board){
         dst_col = dst_col%32 - 1;
         src_row -= 1;
         dst_row -= 1;
-        else if (src_row < 0 || src_row > 7 || dst_row < 0 || dst_row > 7 || src_col > 7 || src_col < 0 || dst_col > 7 || dst_col < 0) {
+        if (src_row < 0 || src_row > 7 || dst_row < 0 || dst_row > 7 || src_col > 7 || src_col < 0 || dst_col > 7 || dst_col < 0) {
           printf("Invalid: must be within the board\n");
           invalid_move = TRUE;
         }
 
         //check if initial coordinate is your color
-        else if ((board->board[src_row][src_col].color == player->piece_type) {
+        else if (board->board[src_row][src_col].color == player->piece_type) {
           printf("Invalid: must select your piece with initial coordinate\n");
           invalid_move = TRUE;
         }
@@ -70,10 +70,10 @@ int move(player_t *player, piece_t *board){
               if(board->pieces[player->piece_type][i].taken == FALSE) {
                 //We need to check if the final position is valid and if there are any pieces in the way
 
-                if(check_movement(board, player->piece_type, i, 8 - dst_row, dst_col - 65) && (instruction = check_collision(board, player->piece_type, i, 8 - dst_row, dst_col - 65)) > 0) {
+                if(check_movement(board, player->piece_type, i, 8 - dst_row, dst_col) && (instruction = check_collision(board, player->piece_type, i, 8 - dst_row, dst_col)) > 0) {
                   invalid_move = FALSE;
                   board->pieces[player->piece_type][i].row = 8 - dst_row;
-                  board->pieces[player->piece_type][i].col = dst_col - 65;
+                  board->pieces[player->piece_type][i].col = dst_col;
 
                   if (instruction == 2) {
                     if (dst_col == 'C') {
@@ -133,7 +133,6 @@ int move(player_t *player, piece_t *board){
             }
             draw(board);
           }
-
       }else{
         printf("Format error. Proper format is: a1 to a2 OR e4\n");
       }
