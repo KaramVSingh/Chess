@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "player.h"
+#include "ai.h"
 
 int move(player_t *player, board_t *board){
   int n, src_row, dst_row, invalid_move = 0, i, instruction, status, hold, opp_type;
