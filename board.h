@@ -1,3 +1,6 @@
+#if !defined(BOARD_H)
+#define BOARD_H
+
 #define MAX_ROWS 8
 #define MAX_COLS 8
 #define WHITE 1
@@ -40,3 +43,4 @@ int check_movement(board_t *board, int piece_type, int piece_number, int row, in
 int check_collision(board_t *board, int piece_type, int piece_number, int row, int col);
 //this function simply removes a piece and adds it to the taken list
 int take_piece(board_t *board, int piece_type, int piece_number, int enPassant);
+#endif
