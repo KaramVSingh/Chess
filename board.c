@@ -7,7 +7,7 @@ int check(board_t *board, int color);
 board_t *create_board(){
   board_t *result;
   int i, j, k;
-  int values[] = {0, 9, 3, 3, 3, 3, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1};
+  int values[] = {100, 9, 3, 3, 3, 3, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1};
   int cols[] = {4, 3, 2, 5, 1, 6, 0, 7, 0, 1, 2, 3, 4, 5, 6, 7};
   char names[] = {'K', 'Q', 'B', 'B', 'N', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'};
 
