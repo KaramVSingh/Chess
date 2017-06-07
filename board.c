@@ -414,7 +414,7 @@ int check_status(board_t *board, int color){
         case 'P':
         case 'p':
           if(!board->pieces[color][k].taken){
-            i = ++board->pieces[color][k].row;
+            i = color?--board->pieces[color][k].row:++board->pieces[color][k].row;
             j = board->pieces[color][k].col;
             if(i < MAX_ROWS && board->board[i][j] == 32 && !check(board, color)){
               return_val = CHECK;
