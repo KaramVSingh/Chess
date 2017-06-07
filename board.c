@@ -414,7 +414,7 @@ int check_status(board_t *board, int color){
         case 'P':
         case 'p':
           if(!board->pieces[color][k].taken){
-            i = color?--board->pieces[color][k].row:++board->pieces[color][k].row;
+            i = color?++board->pieces[color][k].row:--board->pieces[color][k].row;
             j = board->pieces[color][k].col;
             if(i < MAX_ROWS && board->board[i][j] == 32 && !check(board, color)){
               return_val = CHECK;
@@ -428,7 +428,11 @@ int check_status(board_t *board, int color){
             if(j < MAX_COLS && board->board[i][j] > 96 && !check(board, color)){
               return_val = 1;
             }
-            board->pieces[color][k].row--;
+            if(color){
+              board->pieces[color][k].row--;
+            }else{
+              board->pieces[color][k].row++;
+            }
             board->pieces[color][k].col--;
           }
           break;
