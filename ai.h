@@ -22,5 +22,6 @@ move_t *generate_moves(board_t *board, int color);
 void alphabeta(board_t *board, move_t *move, int max, int depth, float alpha, float beta);
 
 void print_move(move_t move);
+void move_piece(board_t *board, move_t move, int color);
 
 #endif
