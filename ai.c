@@ -29,7 +29,14 @@ void init_ai(){
 
 }
 
-int make_move(board_t *board){
+int make_move(board_t *board, int color){
+  int i;
+
+  for(i = 0; i < 16; i++){
+    if(!board->pieces[color][i].taken){
+
+    }
+  }
 
   return 0;
 }
