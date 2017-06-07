@@ -144,7 +144,7 @@ int move(player_t *player, board_t *board){
       }
     }while((n != 2 && n != 4) || invalid_move);
   }else{
-    return make_move(board, player->piece_type);
+    make_move(board, player->piece_type);
   }
 
   return 1;
