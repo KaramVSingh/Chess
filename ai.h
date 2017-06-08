@@ -23,6 +23,7 @@ void alphabeta(board_t *board, move_t *move, int max, int depth, float alpha, fl
 
 void print_move(move_t move);
 void move_piece(board_t *board, move_t move, int color);
+void undo_move(board_t *board, move_t move, int color);
 
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, int color);
 

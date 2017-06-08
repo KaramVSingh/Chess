@@ -244,6 +244,7 @@ move_t *generate_moves(board_t *board, int color){
             }
             dst_row++;
           }
+          break;
         default:
           moves[j] = create_move('S', 'T', 0, 0, 0, 0, color);
           j++;
@@ -285,6 +286,24 @@ void move_piece(board_t *board, move_t move, int color){
         board->pieces[!color][i].col == move.dst_col &&
         board->pieces[!color][i].name == move.taken){
           board->pieces[!color][i].taken = TRUE;
+        }
+    }
+  }
+}
+
+/*
+  given a board and a move that was performed, undoes that move
+*/
+void undo_move(board_t *board, move_t move, int color){
+  int i;
+  board->board[move.src_row][move.src_col] = move.moved;
+  board->board[move.dst_row][move.dst_col] = move.taken;
+  if(move.taken != ' '){
+    for(i = 0; i < 16; i++){
+      if(board->pieces[!color][i].row == move.dst_row &&
+        board->pieces[!color][i].col == move.dst_col &&
+        board->pieces[!color][i].name == move.taken){
+          board->pieces[!color][i].taken = FALSE;
         }
     }
   }
