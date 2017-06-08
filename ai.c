@@ -418,9 +418,6 @@ move_t *generate_moves(board_t *board, int color){
       }
     }
   }
-  for(i = 0; i < MAX_MOVES; i++){
-    print_move(moves[i]);
-  }
   return moves;
 }
 
