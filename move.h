@@ -24,6 +24,9 @@ void print_move(move_t move);
 void move_piece(board_t *board, move_t move, int color);
 void undo_move(board_t *board, move_t move, int color);
 
+void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
+void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
+
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, int color);
 
 #endif
