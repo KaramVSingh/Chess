@@ -30,6 +30,10 @@ void init_ai(){
   srand(time(NULL));
 }
 
+/*
+  right now this generates the array of available moves (mostly not return_val
+  moves yet) and then randomly selects one
+*/
 int make_move(board_t *board, int color){
   int i;
   move_t parent, move;
@@ -43,6 +47,10 @@ int make_move(board_t *board, int color){
   return 0;
 }
 
+/*
+  generates an array of all available moves for a given color with the
+  board currenlty as it is
+*/
 move_t *generate_moves(board_t *board, int color){
   move_t *moves;
   int i, j, row, col, dst_row, dst_col;
@@ -152,6 +160,9 @@ move_t *generate_moves(board_t *board, int color){
   return moves;
 }
 
+/*
+  for debugging purposes, prints out a move in a nice format
+*/
 void print_move(move_t move){
   printf("Piece %c moves from %c%d to %c%d", move.moved, (char)(move.src_col + 65), 8-move.src_row,
     (char)(move.dst_col + 65), 8-move.dst_row);
@@ -162,6 +173,11 @@ void print_move(move_t move){
   }
 }
 
+/*
+  given a move, modifies the board to reflect the state of the move
+  right now, it assumes that the move is valid, can alter that if need
+  be later
+*/
 void move_piece(board_t *board, move_t move, int color){
   int i;
   board->board[move.src_row][move.src_col] = ' ';
