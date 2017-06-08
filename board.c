@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+#include "move.h"
 
 int check(board_t *board, int color);
 
