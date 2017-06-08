@@ -62,65 +62,88 @@ move_t *generate_moves(board_t *board, int color){
   }
   j = 0;
   for(i = 0; i < 16; i++){
-    row = board->pieces[color][i].row;
-    col = board->pieces[color][i].col;
-    c = board->pieces[color][i].name;
-    switch(c){
-      case 'P':
-      case 'p':
-        dst_row = row + (color?1:-1);
-        dst_col = col;
-        if(board->board[dst_row][dst_col] == ' '){
-          moves[j].moved = c;
-          moves[j].taken = ' ';
-          moves[j].src_row = row;
-          moves[j].src_col = col;
-          moves[j].dst_row = dst_row;
-          moves[j].dst_col = dst_col;
+    if(!board->pieces[color][i].taken){
+      row = board->pieces[color][i].row;
+      col = board->pieces[color][i].col;
+      c = board->pieces[color][i].name;
+      switch(c){
+        case 'P':
+        case 'p':
+          dst_row = row + (color?1:-1);
+          dst_col = col;
+          if(board->board[dst_row][dst_col] == ' '){
+            moves[j].moved = c;
+            moves[j].taken = ' ';
+            moves[j].src_row = row;
+            moves[j].src_col = col;
+            moves[j].dst_row = dst_row;
+            moves[j].dst_col = dst_col;
+            moves[j].color = color;
+            moves[j].value = 0.0;
+            moves[j].children = NULL;
+            j++;
+          }
+          dst_col = col++;
+          if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
+            moves[j].moved = c;
+            moves[j].taken = board->board[dst_row][dst_col];
+            moves[j].src_row = row;
+            moves[j].src_col = col;
+            moves[j].dst_row = dst_row;
+            moves[j].dst_col = dst_col;
+            moves[j].color = color;
+            moves[j].value = 0.0;
+            moves[j].children = NULL;
+            j++;
+          }
+          dst_col = col--;
+          if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
+            moves[j].moved = c;
+            moves[j].taken = board->board[dst_row][dst_col];
+            moves[j].src_row = row;
+            moves[j].src_col = col;
+            moves[j].dst_row = dst_row;
+            moves[j].dst_col = dst_col;
+            moves[j].color = color;
+            moves[j].value = 0.0;
+            moves[j].children = NULL;
+            j++;
+          }
+          break;
+        case 'K':
+        case 'k':
+          for(dst_row = row - 1; dst_row <= row + 1; dst_row++){
+            for(dst_col = col - 1; dst_col <= col + 1; dst_col++){
+              if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
+                if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
+                  moves[j].moved = c;
+                  moves[j].taken = board->board[dst_row][dst_col];
+                  moves[j].src_row = row;
+                  moves[j].src_col = col;
+                  moves[j].dst_row = dst_row;
+                  moves[j].dst_col = dst_col;
+                  moves[j].color = color;
+                  moves[j].value = 0.0;
+                  moves[j].children = NULL;
+                  j++;
+                }
+              }
+            }
+          }
+          break;
+        default:
+          moves[j].moved = 'M';
+          moves[j].taken = 'N';
+          moves[j].src_row = 0;
+          moves[j].src_col = 0;
+          moves[j].dst_row = 0;
+          moves[j].dst_col = 0;
           moves[j].color = color;
           moves[j].value = 0.0;
           moves[j].children = NULL;
           j++;
-        }
-        dst_col = col++;
-        if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-          moves[j].moved = c;
-          moves[j].taken = board->board[dst_row][dst_col];
-          moves[j].src_row = row;
-          moves[j].src_col = col;
-          moves[j].dst_row = dst_row;
-          moves[j].dst_col = dst_col;
-          moves[j].color = color;
-          moves[j].value = 0.0;
-          moves[j].children = NULL;
-          j++;
-        }
-        dst_col = col--;
-        if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-          moves[j].moved = c;
-          moves[j].taken = board->board[dst_row][dst_col];
-          moves[j].src_row = row;
-          moves[j].src_col = col;
-          moves[j].dst_row = dst_row;
-          moves[j].dst_col = dst_col;
-          moves[j].color = color;
-          moves[j].value = 0.0;
-          moves[j].children = NULL;
-          j++;
-        }
-        break;
-      default:
-        moves[j].moved = 'M';
-        moves[j].taken = 'N';
-        moves[j].src_row = 0;
-        moves[j].src_col = 0;
-        moves[j].dst_row = 0;
-        moves[j].dst_col = 0;
-        moves[j].color = color;
-        moves[j].value = 0.0;
-        moves[j].children = NULL;
-        j++;
-        break;
+          break;
+      }
     }
   }
   for(i = 0; i < MAX_MOVES; i++){
