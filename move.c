@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "move.h"
 
-move_t *generate_moves(board_t *board, int color){
-  move_t *moves;
+move_t *generate_moves(board_t *board, int color, int *length){
+  move_t *moves, *result;
   int i, j, row, col, dst_row, dst_col, done;
   char c;
 
@@ -364,7 +364,18 @@ move_t *generate_moves(board_t *board, int color){
       }
     }
   }
-  return moves;
+  i = 0;
+  while(moves[i].moved != 'A'){
+    i++;
+  }
+  result = (move_t *) malloc(i*sizeof(move_t));
+  for(j = 0; j < i; j++){
+    result[j] = moves[j];
+  }
+  free(moves);
+  moves = NULL;
+  *length = i;
+  return result;
 }
 
 

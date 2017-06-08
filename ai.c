@@ -1,5 +1,6 @@
 #include "ai.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
 float weights[8][8];
@@ -37,12 +38,14 @@ int make_move(board_t *board, int color){
   int i;
   move_t parent, move;
 
-  parent.children = generate_moves(board, color);
-  i = 0;
-  while(parent.children[i].moved != 'A'){
-    i++;
+  parent.children = generate_moves(board, color, &parent.length);
+  /*
+  printf("Number of moves: %d\n", parent.length);
+  for(i = 0; i < parent.length; i++){
+    print_move(parent.children[i]);
   }
-  i = rand() % i;
+  */
+  i = rand() % parent.length;
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
   move_piece(board, move, color);

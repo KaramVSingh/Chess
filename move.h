@@ -3,7 +3,7 @@
 
 #include "board.h"
 
-#define MAX_MOVES 64
+#define MAX_MOVES 220
 
 typedef struct move{
   char moved;
@@ -15,9 +15,10 @@ typedef struct move{
   int color;
   float value;
   struct move *children;
+  int length;
 }move_t;
 
-move_t *generate_moves(board_t *board, int color);
+move_t *generate_moves(board_t *board, int color, int *length);
 
 void print_move(move_t move);
 void move_piece(board_t *board, move_t move, int color);
