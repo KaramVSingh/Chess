@@ -55,6 +55,7 @@ int make_move(board_t *board, int color){
 /*
   generates an array of all available moves for a given color with the
   board currenlty as it is
+  TODO: special moves (pawns, castling), and disallow moves that place ai in check
 */
 move_t *generate_moves(board_t *board, int color){
   move_t *moves;
