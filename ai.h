@@ -27,4 +27,6 @@ void undo_move(board_t *board, move_t move, int color);
 
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, int color);
 
+float calculate_move(board_t *board, move);
+
 #endif
