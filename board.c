@@ -468,6 +468,8 @@ int check(board_t *board, int color){
       c = board->board[i-k][j];
       if(c == ('Q' + shift) || c == ('R' + shift)){
         return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
         up = FALSE;
       }else if(c != 32){
@@ -477,6 +479,8 @@ int check(board_t *board, int color){
     if(down && i + k < MAX_ROWS){
       c = board->board[i+k][j];
       if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
         down = FALSE;
@@ -488,6 +492,8 @@ int check(board_t *board, int color){
       c = board->board[i][j-k];
       if(c == ('Q' + shift) || c == ('R' + shift)){
         return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
         left = FALSE;
       }else if(c != 32){
@@ -497,6 +503,8 @@ int check(board_t *board, int color){
     if(right && j + k < MAX_COLS){
       c = board->board[i][j+k];
       if(c == ('Q' + shift) || c == ('R' + shift)){
+        return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('B' + shift) || c == ('P' + shift)){
         right = FALSE;
@@ -528,6 +536,8 @@ int check(board_t *board, int color){
       c = board->board[i-k][j+k];
       if(c == ('Q' + shift) || c == ('B' + shift)){
         return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         up = FALSE;
       }else if(c != 32){
@@ -537,6 +547,8 @@ int check(board_t *board, int color){
     if(right && i+k < MAX_ROWS && j+k < MAX_COLS){
       c = board->board[i+k][j+k];
       if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         right = FALSE;
@@ -548,6 +560,8 @@ int check(board_t *board, int color){
       c = board->board[i+k][j-k];
       if(c == ('Q' + shift) || c == ('B' + shift)){
         return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         down = FALSE;
       }else if(c != 32){
@@ -557,6 +571,8 @@ int check(board_t *board, int color){
     if(left && i-k >= 0 && j-k >= 0){
       c = board->board[i-k][j-k];
       if(c == ('Q' + shift) || c == ('B' + shift)){
+        return TRUE;
+      }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         left = FALSE;
