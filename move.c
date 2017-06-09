@@ -198,6 +198,18 @@ move_t *generate_moves(board_t *board, int color, int *length){
   for debugging purposes, prints out a move in a nice format
 */
 void print_move(move_t move){
+  switch (move.type){
+    case STANDARD:
+      break;
+    case ENPASSANT:
+      printf("En Passant! ");
+      break;
+    case CASTLE:
+      printf("Castle! ");
+      break;
+    case PROMOTION:
+      printf("Promotion! ");
+  }
   printf("Piece %c moves from %c%d to %c%d", move.moved, (char)(move.src_col + 65), 8-move.src_row,
     (char)(move.dst_col + 65), 8-move.dst_row);
   if(move.taken != ' '){
