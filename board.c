@@ -538,6 +538,8 @@ int check(board_t *board, int color){
         return TRUE;
       }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
+      }else if(k == 1 && !color && c == 'P'){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         up = FALSE;
       }else if(c != 32){
@@ -549,6 +551,8 @@ int check(board_t *board, int color){
       if(c == ('Q' + shift) || c == ('B' + shift)){
         return TRUE;
       }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
+      }else if(k == 1 && color && c == 'p'){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         right = FALSE;
@@ -562,6 +566,8 @@ int check(board_t *board, int color){
         return TRUE;
       }else if(k == 1 && c == ('K' + shift)){
         return TRUE;
+      }else if(k == 1 && color && c == 'p'){
+        return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         down = FALSE;
       }else if(c != 32){
@@ -573,6 +579,8 @@ int check(board_t *board, int color){
       if(c == ('Q' + shift) || c == ('B' + shift)){
         return TRUE;
       }else if(k == 1 && c == ('K' + shift)){
+        return TRUE;
+      }else if(k == 1 && !color && c == 'P'){
         return TRUE;
       }else if(c == ('K' + shift) || c == ('N' + shift) || c == ('R' + shift) || c == ('P' + shift)){
         left = FALSE;
