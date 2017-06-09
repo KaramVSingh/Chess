@@ -35,6 +35,8 @@ void draw(board_t *board);
 //might not need this function, but could be handy
 int check_status(board_t *board, int color);
 
+int check(board_t *board, int color);
+
 int place_piece(board_t *board, char name, int row, int col);
 
 //this function checks if a piece's final position is in accordance with its abilities
