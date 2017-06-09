@@ -3,7 +3,7 @@
 #include "move.h"
 
 move_t *generate_moves(board_t *board, int color, int *length){
-  move_t *moves, *result;
+  move_t *moves, *result, test;
   int i, j, row, col, dst_row, dst_col, shift;
   char c;
 
@@ -25,19 +25,10 @@ move_t *generate_moves(board_t *board, int color, int *length){
           if(row == (color?6:1)){
             shift = (color?0:32);
             if(board->board[dst_row][dst_col] == ' '){
-              moves[j] = create_move('Q'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-              j++;
-              moves[j] = create_move('R'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-              j++;
-              moves[j] = create_move('N'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-              j++;
-              moves[j] = create_move('B'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-              j++;
-            }
-            if(col + 1 < MAX_COLS){
-              dst_col = col + 1;
-              if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                moves[j] = create_move('Q'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+              test = create_move('Q'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
                 j++;
                 moves[j] = create_move('R'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
                 j++;
@@ -46,37 +37,76 @@ move_t *generate_moves(board_t *board, int color, int *length){
                 moves[j] = create_move('B'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
                 j++;
               }
+              undo_move(board, test, color);
+            }
+            if(col + 1 < MAX_COLS){
+              dst_col = col + 1;
+              if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
+                test = create_move('Q'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                move_piece(board, test, color);
+                if(!check(board, color)){
+                  moves[j] = test;
+                  j++;
+                  moves[j] = create_move('R'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                  moves[j] = create_move('N'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                  moves[j] = create_move('B'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                }
+                undo_move(board, test, color);
+              }
             }
             if(col - 1 >= 0){
               dst_col = col - 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                moves[j] = create_move('Q'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-                j++;
-                moves[j] = create_move('R'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-                j++;
-                moves[j] = create_move('N'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-                j++;
-                moves[j] = create_move('B'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
-                j++;
+                test = create_move('Q'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                move_piece(board, test, color);
+                if(!check(board, color)){
+                  moves[j] = test;
+                  j++;
+                  moves[j] = create_move('R'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                  moves[j] = create_move('N'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                  moves[j] = create_move('B'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  j++;
+                }
+                undo_move(board, test, color);
               }
             }
           }else{
             if(board->board[dst_row][dst_col] == ' '){
-              moves[j] = create_move(c, ' ', row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, ' ', row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
             if(col + 1 < MAX_COLS){
               dst_col = col + 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-                j++;
+                test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                move_piece(board, test, color);
+                if(!check(board, color)){
+                  moves[j] = test;
+                  j++;
+                }
+                undo_move(board, test, color);
               }
             }
             if(col - 1 >= 0){
               dst_col = col - 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-                j++;
+                test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                move_piece(board, test, color);
+                if(!check(board, color)){
+                  moves[j] = test;
+                  j++;
+                }
+                undo_move(board, test, color);
               }
             }
           }
@@ -87,8 +117,13 @@ move_t *generate_moves(board_t *board, int color, int *length){
             for(dst_col = col - 1; dst_col <= col + 1; dst_col++){
               if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
                 if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-                  moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-                  j++;
+                  test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                  move_piece(board, test, color);
+                  if(!check(board, color)){
+                    moves[j] = test;
+                    j++;
+                  }
+                  undo_move(board, test, color);
                 }
               }
             }
@@ -100,64 +135,104 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col + 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row + 1;
           dst_col = col - 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row - 1;
           dst_col = col - 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row - 1;
           dst_col = col + 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row + 2;
           dst_col = col + 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row + 2;
           dst_col = col - 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row - 2;
           dst_col = col - 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           dst_row = row - 2;
           dst_col = col + 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              moves[j] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-              j++;
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
             }
           }
           break;
@@ -239,8 +314,26 @@ void move_piece(board_t *board, move_t move, int color){
   }
   for(i = 0; i < 16; i++){
     if(board->pieces[color][i].row == move.src_row &&
-      board->pieces[color][i].col == move.src_col &&
-      board->pieces[color][i].name == move.moved){
+      board->pieces[color][i].col == move.src_col){
+        if(move.type == PROMOTION){
+          board->pieces[color][i].name = move.moved;
+          switch(move.moved){
+            case 'Q':
+            case 'q':
+              board->pieces[color][i].val = 9;
+              break;
+            case 'R':
+            case 'r':
+              board->pieces[color][i].val = 5;
+              break;
+            case 'N':
+            case 'n':
+            case 'B':
+            case 'b':
+              board->pieces[color][i].val = 3;
+              break;
+          }
+        }
         board->pieces[color][i].row = move.dst_row;
         board->pieces[color][i].col = move.dst_col;
       }
@@ -265,8 +358,11 @@ void undo_move(board_t *board, move_t move, int color){
   }
   for(i = 0; i < 16; i++){
     if(board->pieces[color][i].row == move.dst_row &&
-      board->pieces[color][i].col == move.dst_col &&
-      board->pieces[color][i].name == move.moved){
+      board->pieces[color][i].col == move.dst_col){
+        if(move.type == PROMOTION){
+          board->pieces[color][i].name = (color?'P':'p');
+          board->pieces[color][i].val = 1;
+        }
         board->pieces[color][i].row = move.src_row;
         board->pieces[color][i].col = move.src_col;
       }
@@ -293,6 +389,7 @@ move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row
 void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
   int row, col, dst_row, dst_col, done,color;
   char c;
+  move_t test;
 
   row = piece.row;
   col = piece.col;
@@ -308,12 +405,22 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row--;
     dst_col--;
@@ -328,12 +435,22 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row--;
     dst_col++;
@@ -348,12 +465,22 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row++;
     dst_col--;
@@ -368,12 +495,22 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row++;
     dst_col++;
@@ -384,6 +521,7 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
 void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
   int row, col, dst_row, dst_col, done,color;
   char c;
+  move_t test;
 
   row = piece.row;
   col = piece.col;
@@ -399,12 +537,22 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_col--;
   }
@@ -418,12 +566,22 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_col++;
   }
@@ -437,12 +595,22 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row--;
   }
@@ -456,12 +624,22 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-        (*index)++;
+        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        move_piece(board, test, color);
+        if(!check(board, color)){
+          moves[*index] = test;
+          (*index)++;
+        }
+        undo_move(board, test, color);
       }
     }else{
-      moves[*index] = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
-      (*index)++;
+      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      move_piece(board, test, color);
+      if(!check(board, color)){
+        moves[*index] = test;
+        (*index)++;
+      }
+      undo_move(board, test, color);
     }
     dst_row++;
   }
