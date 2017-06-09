@@ -43,6 +43,10 @@ int make_move(board_t *board, int color){
   for(i = 0; i < parent.length; i++){
     print_move(parent.children[i]);
   }
+  if(parent.length == 0){
+    printf("CHECKMATE\n");
+    return -1;
+  }
   i = rand() % parent.length;
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
