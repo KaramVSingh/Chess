@@ -39,12 +39,10 @@ int make_move(board_t *board, int color){
   move_t parent, move;
 
   parent.children = generate_moves(board, color, &parent.length);
-  /*
   printf("Number of moves: %d\n", parent.length);
   for(i = 0; i < parent.length; i++){
     print_move(parent.children[i]);
   }
-  */
   i = rand() % parent.length;
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
