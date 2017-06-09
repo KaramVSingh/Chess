@@ -15,16 +15,16 @@ board_t *create_board(){
   result = (board_t *)malloc(sizeof(board_t));
 
   for(i = 0; i < 16; i++){
-    result->pieces[WHITE][i].row = i/8;
-    result->pieces[WHITE][i].col = cols[i];
-    result->pieces[WHITE][i].name = names[i];
-    result->pieces[WHITE][i].val = values[i];
-    result->pieces[WHITE][i].taken = 0;
-    result->pieces[BLACK][i].row = 7 - i/8;
+    result->pieces[BLACK][i].row = i/8;
     result->pieces[BLACK][i].col = cols[i];
-    result->pieces[BLACK][i].name = names[i] + 32;
+    result->pieces[BLACK][i].name = names[i];
     result->pieces[BLACK][i].val = values[i];
     result->pieces[BLACK][i].taken = 0;
+    result->pieces[WHITE][i].row = 7 - i/8;
+    result->pieces[WHITE][i].col = cols[i];
+    result->pieces[WHITE][i].name = names[i] + 32;
+    result->pieces[WHITE][i].val = values[i];
+    result->pieces[WHITE][i].taken = 0;
   }
 
   for(i = 0; i < MAX_ROWS; i++){
@@ -620,22 +620,22 @@ int check(board_t *board, int color){
 }
 
 int place_piece(board_t *board, char name, int row, int col){
-  int i = 0, color = BLACK;
+  int i = 0, color = WHITE;
 
   switch (name) {
     case 'K':
-      color = WHITE;
+      color = BLACK;
     case 'k':
       i = 0;
       break;
     //TODO:should check if piece already taken for these, can use a pawn if need be
     case 'Q':
-      color = WHITE;
+      color = BLACK;
     case 'q':
       i = 1;
       break;
     case 'B':
-      color = WHITE;
+      color = BLACK;
     case 'b':
       if(board->pieces[color][2].taken){
         i = 2;
@@ -647,7 +647,7 @@ int place_piece(board_t *board, char name, int row, int col){
       }
       break;
     case 'N':
-      color = WHITE;
+      color = BLACK;
     case 'n':
       if(board->pieces[color][4].taken){
         i = 4;
@@ -659,7 +659,7 @@ int place_piece(board_t *board, char name, int row, int col){
       }
       break;
     case 'R':
-      color = WHITE;
+      color = BLACK;
     case 'r':
       if(board->pieces[color][6].taken){
         i = 6;
@@ -671,7 +671,7 @@ int place_piece(board_t *board, char name, int row, int col){
       }
       break;
     case 'P':
-      color = WHITE;
+      color = BLACK;
     case 'p':
       i = 8;
       while(i < 16 && !board->pieces[color][i].taken){

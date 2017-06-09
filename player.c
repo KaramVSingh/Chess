@@ -45,21 +45,21 @@ int move(player_t *player, board_t *board){
         }
 
         //check if initial coordinate is your color
-        else if ((board->board[8-src_row][src_col-65] < 'a') && player->piece_type == BLACK) {
+        else if ((board->board[8-src_row][src_col-65] < 'a') && player->piece_type == WHITE) {
           printf("Invalid: must select your piece with initial coordinate\n");
           invalid_move = TRUE;
         }
-        else if (((board->board[8-src_row][src_col-65] > 'Z') || (board->board[8-src_row][src_col-65]) < 'A') && player->piece_type == WHITE) {
+        else if (((board->board[8-src_row][src_col-65] > 'Z') || (board->board[8-src_row][src_col-65]) < 'A') && player->piece_type == BLACK) {
           printf("Invalid: must select your piece with initial coordinate\n");
           invalid_move = TRUE;
         }
 
         //checks if move points to a piece of the same color
-        else if ((board->board[8-dst_row][dst_col-65] > 'a') && player->piece_type == BLACK) {
+        else if ((board->board[8-dst_row][dst_col-65] > 'a') && player->piece_type == WHITE) {
           printf("Invalid: cannot place piece where a piece of your color stands\n");
           invalid_move = TRUE;
         }
-        else if (((board->board[8-dst_row][dst_col-65] > 'A') && ((board->board[8-dst_row][dst_col-65] < 'Z')) && player->piece_type == WHITE)) {
+        else if (((board->board[8-dst_row][dst_col-65] > 'A') && ((board->board[8-dst_row][dst_col-65] < 'Z')) && player->piece_type == BLACK)) {
           printf("Invalid: cannot place piece where a piece of your color stands\n");
           invalid_move = TRUE;
         }

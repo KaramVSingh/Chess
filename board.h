@@ -3,8 +3,8 @@
 
 #define MAX_ROWS 8
 #define MAX_COLS 8
-#define WHITE 1
-#define BLACK 0
+#define WHITE 0
+#define BLACK 1
 #define TRUE 1
 #define FALSE 0
 #define CHECK 1
