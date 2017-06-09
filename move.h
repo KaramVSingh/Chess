@@ -5,6 +5,13 @@
 
 #define MAX_MOVES 220
 
+typedef enum m_type{
+  STANDARD,
+  ENPASSANT,
+  CASTLE,
+  PROMOTION
+} m_type;
+
 typedef struct move{
   char moved;
   char taken;
@@ -12,6 +19,7 @@ typedef struct move{
   int src_col;
   int dst_row;
   int dst_col;
+  m_type type;
   int color;
   float value;
   struct move *children;
@@ -27,6 +35,6 @@ void undo_move(board_t *board, move_t move, int color);
 void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
 void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
 
-move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, int color);
+move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color);
 
 #endif
