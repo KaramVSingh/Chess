@@ -5,6 +5,10 @@
 
 float weights[8][8];
 
+float calculate_material(board_t *board, int color){
+  return 0.0;
+}
+
 void init_ai(){
   int i, j;
   float x, y, val;
@@ -28,6 +32,11 @@ void init_ai(){
     //printf("\n");
   }
   srand(time(NULL));
+  enpassant = (move_t *) malloc(sizeof(move_t));
+  enpassant->type = NONE;
+  castle = (move_t *)  malloc(2 * sizeof(move_t));
+  castle[0].type = NONE;
+  castle[1].type = NONE;
 }
 
 /*

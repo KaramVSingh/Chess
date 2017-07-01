@@ -274,6 +274,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
 */
 void print_move(move_t move){
   switch (move.type){
+    case NONE:
     case STANDARD:
       break;
     case ENPASSANT:

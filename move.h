@@ -6,6 +6,7 @@
 #define MAX_MOVES 220
 
 typedef enum m_type{
+  NONE,
   STANDARD,
   ENPASSANT,
   CASTLE,
@@ -25,6 +26,10 @@ typedef struct move{
   struct move *children;
   int length;
 }move_t;
+
+move_t *enpassant;
+move_t *castle;
+
 
 move_t *generate_moves(board_t *board, int color, int *length);
 
