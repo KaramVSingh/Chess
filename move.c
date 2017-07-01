@@ -123,9 +123,9 @@ move_t *generate_moves(board_t *board, int color, int *length){
               undo_move(board, test, color);
             }
           }
-          if(enpassant->type == PREENPASSANT){
-            if(enpassant->dst_row == row && abs(enpassant->dst_col - col) == 1){
-              test = create_move(c, board->board[enpassant->dst_row][enpassant->dst_col], row, col, row + (color?1:-1), enpassant->dst_col, ENPASSANT, color);
+          if(enpassant.type == PREENPASSANT){
+            if(enpassant.dst_row == row && abs(enpassant.dst_col - col) == 1){
+              test = create_move(c, board->board[enpassant.dst_row][enpassant.dst_col], row, col, row + (color?1:-1), enpassant.dst_col, ENPASSANT, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -300,7 +300,9 @@ void print_move(move_t move){
   switch (move.type){
     case NOMOVE:
     case STANDARD:
+      break;
     case PREENPASSANT:
+      printf("Pre En Passant! ");
       break;
     case ENPASSANT:
       printf("En Passant! ");
@@ -330,12 +332,19 @@ void move_piece(board_t *board, move_t move, int color){
   board->board[move.src_row][move.src_col] = ' ';
   board->board[move.dst_row][move.dst_col] = move.moved;
   if(move.taken != ' '){
+
     for(i = 0; i < 16; i++){
-      if(board->pieces[!color][i].row == move.dst_row &&
+      if(move.type == ENPASSANT){
+        if(board->pieces[!color][i].row == move.dst_row + (color?-1:1) &&
+           board->pieces[!color][i].col == move.dst_col &&
+           board->pieces[!color][i].name == move.taken){
+             board->pieces[!color][i].taken = TRUE;
+           }
+      }else if(board->pieces[!color][i].row == move.dst_row &&
         board->pieces[!color][i].col == move.dst_col &&
         board->pieces[!color][i].name == move.taken){
           board->pieces[!color][i].taken = TRUE;
-        }
+      }
     }
   }
   for(i = 0; i < 16; i++){
@@ -364,15 +373,22 @@ void move_piece(board_t *board, move_t move, int color){
         board->pieces[color][i].col = move.dst_col;
       }
     }
-    /*if(move.type != PREENPASSANT){
-      if(enpassant->type == PREENPASSANT){
-        enpassant->type = NOMOVE;
+    if(move.type != PREENPASSANT){
+      if(enpassant.type == PREENPASSANT){
+        enpassant.type = STANDARD;
       }else{
-        enpassant->type = STANDARD;
+        enpassant.type = NOMOVE;
       }
     }else{
-      enpassant = &move;
-    }*/
+      enpassant.moved = move.moved;
+      enpassant.taken = move.taken;
+      enpassant.src_row = move.src_row;
+      enpassant.src_col = move.src_col;
+      enpassant.dst_row = move.dst_row;
+      enpassant.dst_col = move.dst_col;
+      enpassant.type = move.type;
+      enpassant.color = move.color;
+    }
 }
 
 /*
@@ -388,7 +404,13 @@ void undo_move(board_t *board, move_t move, int color){
   board->board[move.dst_row][move.dst_col] = move.taken;
   if(move.taken != ' '){
     for(i = 0; i < 16; i++){
-      if(board->pieces[!color][i].row == move.dst_row &&
+      if(move.type == ENPASSANT){
+        if(board->pieces[!color][i].row == move.dst_row + (color?-1:1) &&
+           board->pieces[!color][i].col == move.dst_col &&
+           board->pieces[!color][i].name == move.taken){
+             board->pieces[!color][i].taken = FALSE;
+           }
+      }else if(board->pieces[!color][i].row == move.dst_row &&
         board->pieces[!color][i].col == move.dst_col &&
         board->pieces[!color][i].name == move.taken){
           board->pieces[!color][i].taken = FALSE;
@@ -406,11 +428,11 @@ void undo_move(board_t *board, move_t move, int color){
         board->pieces[color][i].col = move.src_col;
       }
   }
-  /*if(enpassant->type == STANDARD){
-    enpassant->type = PREENPASSANT;
-  }else if(enpassant->type == PREENPASSANT){
-    enpassant->type = NOMOVE;
-  }*/
+  if(enpassant.type == STANDARD){
+    enpassant.type = PREENPASSANT;
+  }else if(enpassant.type == PREENPASSANT){
+    enpassant.type = NOMOVE;
+  }
 }
 
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color){

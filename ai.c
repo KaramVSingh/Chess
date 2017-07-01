@@ -31,12 +31,10 @@ void init_ai(){
     }
     //printf("\n");
   }
-  srand(time(NULL));
-  enpassant = (move_t *) malloc(sizeof(move_t));
-  enpassant->type = NOMOVE;
-  castle = (move_t *)  malloc(2 * sizeof(move_t));
+  enpassant.type = NOMOVE;
   castle[0].type = NOMOVE;
   castle[1].type = NOMOVE;
+  srand(time(NULL));
 }
 
 /*

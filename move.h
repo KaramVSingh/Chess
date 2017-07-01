@@ -28,8 +28,8 @@ typedef struct move{
   int length;
 }move_t;
 
-move_t *enpassant;
-move_t *castle;
+move_t enpassant;
+move_t castle[2];
 
 
 move_t *generate_moves(board_t *board, int color, int *length);

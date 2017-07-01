@@ -20,6 +20,7 @@ int validate_move(move_t *move, move_t *moves, int length){
   return 0;
 }
 
+
 int move(player_t *player, board_t *board){
   int src_row, dst_row, color;
   char src_col, dst_col, moved, taken;
@@ -41,6 +42,7 @@ int move(player_t *player, board_t *board){
     }while(!validate_move(&player_move, move.children, move.length));
     printf("Valid move!\n");
     move_piece(board, player_move, color);
+    print_move(player_move);
   }else{
     make_move(board, player->piece_type);
   }
