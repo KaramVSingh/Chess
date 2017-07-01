@@ -7,7 +7,7 @@ chess: chess.o player.o board.o ai.o move.o
 chess.o: chess.c player.h board.h ai.h
 	$(CC) $(CFLAGS) -c chess.c
 
-player.o: player.c player.h board.h
+player.o: player.c player.h board.h move.h
 	$(CC) $(CFLAGS) -c player.c
 
 board.o: board.c board.h move.h
