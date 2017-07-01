@@ -8,6 +8,7 @@
 typedef enum m_type{
   NONE,
   STANDARD,
+  PREENPASSANT,
   ENPASSANT,
   CASTLE,
   PROMOTION

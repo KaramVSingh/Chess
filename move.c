@@ -110,6 +110,30 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
             }
           }
+          if(row == (color?1:6)){
+            dst_row = row + (color?2:-2);
+            dst_col = col;
+            if(board->board[dst_row][dst_col] == ' '){
+              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PREENPASSANT, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
+            }
+          }
+          if(enpassant->type == PREENPASSANT){
+            if(enpassant->dst_row == row && abs(enpassant->dst_col - col) == 1){
+              test = create_move(c, board->board[enpassant->dst_row][enpassant->dst_col], row, col, row + (color?1:-1), enpassant->dst_col, ENPASSANT, color);
+              move_piece(board, test, color);
+              if(!check(board, color)){
+                moves[j] = test;
+                j++;
+              }
+              undo_move(board, test, color);
+            }
+          }
           break;
         case 'K':
         case 'k':
@@ -276,6 +300,7 @@ void print_move(move_t move){
   switch (move.type){
     case NONE:
     case STANDARD:
+    case PREENPASSANT:
       break;
     case ENPASSANT:
       printf("En Passant! ");
@@ -338,11 +363,24 @@ void move_piece(board_t *board, move_t move, int color){
         board->pieces[color][i].row = move.dst_row;
         board->pieces[color][i].col = move.dst_col;
       }
+    if(move.type != PREENPASSANT){
+      if(enpassant->type == PREENPASSANT){
+        enpassant->type = STANDARD;
+      }else{
+        enpassant->type = NONE;
+      }
+    }else{
+      enpassant = &move;
+    }
   }
 }
 
 /*
   given a board and a move that was performed, undoes that move
+*/
+/*
+NOTE: undoing multiple times will not work with current implementation of
+enpassant. Need actual move history for that
 */
 void undo_move(board_t *board, move_t move, int color){
   int i;
@@ -367,6 +405,11 @@ void undo_move(board_t *board, move_t move, int color){
         board->pieces[color][i].row = move.src_row;
         board->pieces[color][i].col = move.src_col;
       }
+  }
+  if(enpassant->type == STANDARD){
+    enpassant->type = PREENPASSANT;
+  }else if(enpassant->type == PREENPASSANT){
+    enpassant->type = NONE;
   }
 }
 
