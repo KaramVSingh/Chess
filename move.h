@@ -6,7 +6,7 @@
 #define MAX_MOVES 220
 
 typedef enum m_type{
-  NONE,
+  NOMOVE,
   STANDARD,
   PREENPASSANT,
   ENPASSANT,

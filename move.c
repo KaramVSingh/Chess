@@ -298,7 +298,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
 */
 void print_move(move_t move){
   switch (move.type){
-    case NONE:
+    case NOMOVE:
     case STANDARD:
     case PREENPASSANT:
       break;
@@ -363,16 +363,16 @@ void move_piece(board_t *board, move_t move, int color){
         board->pieces[color][i].row = move.dst_row;
         board->pieces[color][i].col = move.dst_col;
       }
-    if(move.type != PREENPASSANT){
+    }
+    /*if(move.type != PREENPASSANT){
       if(enpassant->type == PREENPASSANT){
-        enpassant->type = STANDARD;
+        enpassant->type = NOMOVE;
       }else{
-        enpassant->type = NONE;
+        enpassant->type = STANDARD;
       }
     }else{
       enpassant = &move;
-    }
-  }
+    }*/
 }
 
 /*
@@ -406,11 +406,11 @@ void undo_move(board_t *board, move_t move, int color){
         board->pieces[color][i].col = move.src_col;
       }
   }
-  if(enpassant->type == STANDARD){
+  /*if(enpassant->type == STANDARD){
     enpassant->type = PREENPASSANT;
   }else if(enpassant->type == PREENPASSANT){
-    enpassant->type = NONE;
-  }
+    enpassant->type = NOMOVE;
+  }*/
 }
 
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color){
