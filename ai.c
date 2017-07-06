@@ -6,7 +6,17 @@
 float weights[8][8];
 
 float calculate_material(board_t *board, int color){
-  return 0.0;
+  int i;
+  float result, sign;
+
+  sign = color?1.0:-1.0;
+  result = 0.0;
+  for(i = 0; i < 16; i++){
+    result -= sign*(board->pieces[WHITE][i].val);
+    result += sign*(board->pieces[BLACK][i].val);
+  }
+
+  return result;
 }
 
 void init_ai(){
