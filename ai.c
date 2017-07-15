@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 float weights[8][8];
 
@@ -12,8 +13,12 @@ float calculate_material(board_t *board, int color){
   sign = color?1.0:-1.0;
   result = 0.0;
   for(i = 0; i < 16; i++){
-    result -= sign*(board->pieces[WHITE][i].val);
-    result += sign*(board->pieces[BLACK][i].val);
+    if(!board->pieces[WHITE][i].taken){
+      result -= sign*(board->pieces[WHITE][i].val);
+    }
+    if(!board->pieces[BLACK][i].taken){
+      result += sign*(board->pieces[BLACK][i].val);
+    }
   }
 
   return result;
@@ -52,11 +57,30 @@ void init_ai(){
   moves yet) and then randomly selects one
 */
 int make_move(board_t *board, int color){
-  int i;
+  int i, j, difficulty;
+  float max_material = -INFINITY, temp;
   move_t parent, move;
+  difficulty = 1, j = 0;
 
   parent.children = generate_moves(board, color, &parent.length);
-  printf("Number of moves: %d\n", parent.length);
+  if(difficulty == 1){
+    for(i = 0; i < parent.length; i++){
+      move_piece(board, parent.children[i], color);
+      temp = calculate_material(board, color);
+      if(temp > max_material){
+        j = 0;
+        parent.children[j] = parent.children[i];
+        max_material = temp;
+        j++;
+      }else if (temp == max_material){
+        parent.children[j] = parent.children[i];
+        j++;
+      }
+      undo_move(board, parent.children[i], color);
+    }
+    parent.length = j;
+  }
+    printf("Number of moves: %d\n", parent.length);
   for(i = 0; i < parent.length; i++){
     print_move(parent.children[i]);
   }
