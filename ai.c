@@ -86,7 +86,7 @@ int make_move(board_t *board, int color){
   }
   if(parent.length == 0){
     printf("CHECKMATE\n");
-    return -1;
+    return 0;
   }
   i = rand() % parent.length;
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
