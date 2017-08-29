@@ -51,8 +51,8 @@ void init_ai(){
     //printf("\n");
   }
   enpassant.type = NOMOVE;
-  castle[0].type = NOMOVE;
-  castle[1].type = NOMOVE;
+  castle[WHITE].type = NOMOVE;
+  castle[BLACK].type = NOMOVE;
   srand(time(NULL));
 }
 
@@ -84,7 +84,8 @@ int make_move(board_t *board, int color){
     }
     parent.length = j;
   }
-    printf("Number of moves: %d\n", parent.length);
+
+  printf("Number of moves: %d\n", parent.length);
   for(i = 0; i < parent.length; i++){
     print_move(parent.children[i]);
   }

@@ -9,7 +9,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
 
   moves = (move_t *)malloc(MAX_MOVES*sizeof(move_t));
   for(j = 0; j < MAX_MOVES; j++){
-    moves[j] = create_move('A', 'Z', 0, 0, 0, 0, STANDARD, color);
+    moves[j] = create_move('A', 'Z', 0, 0, 0, 0, NOMOVE, color);
   }
   j = 0;
   for(i = 0; i < 16; i++){
@@ -338,7 +338,6 @@ void move_piece(board_t *board, move_t move, int color){
   board->board[move.src_row][move.src_col] = ' ';
   board->board[move.dst_row][move.dst_col] = move.moved;
   if(move.taken != ' '){
-
     for(i = 0; i < 16; i++){
       if(move.type == ENPASSANT){
         if(board->pieces[!color][i].row == move.dst_row + (color?-1:1) &&

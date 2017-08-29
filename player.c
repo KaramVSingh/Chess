@@ -13,6 +13,7 @@ int validate_move(move_t *move, move_t *moves, int length){
        moves[i].dst_row == move->dst_row &&
        moves[i].dst_col == move->dst_col){
          *move = moves[i];
+         printf("Valid move!\n");
          return 1;
        }
   }
@@ -40,7 +41,6 @@ int move(player_t *player, board_t *board){
       color = 1 - moved/96;
       player_move = create_move(moved, taken, src_row, src_col, dst_row, dst_col, NOMOVE, color);
     }while(!validate_move(&player_move, move.children, move.length));
-    printf("Valid move!\n");
     move_piece(board, player_move, color);
     print_move(player_move);
     return 1;
