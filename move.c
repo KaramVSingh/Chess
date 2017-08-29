@@ -22,6 +22,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
         case 'p':
           dst_row = row + (color?1:-1);
           dst_col = col;
+          //promotion case
           if(row == (color?6:1)){
             shift = (color?0:32);
             if(board->board[dst_row][dst_col] == ' '){
@@ -39,6 +40,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
               undo_move(board, test, color);
             }
+            //checking for capture and promotion
             if(col + 1 < MAX_COLS){
               dst_col = col + 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
@@ -76,6 +78,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
             }
           }else{
+            //standard move
             if(board->board[dst_row][dst_col] == ' '){
               test = create_move(c, ' ', row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
@@ -110,9 +113,11 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
             }
           }
+          //initial move two squares
           if(row == (color?1:6)){
             dst_row = row + (color?2:-2);
             dst_col = col;
+            //TODO: check if space in front is empty
             if(board->board[dst_row][dst_col] == ' '){
               test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PREENPASSANT, color);
               move_piece(board, test, color);
@@ -123,6 +128,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
               undo_move(board, test, color);
             }
           }
+          //enpassant
           if(enpassant.type == PREENPASSANT){
             if(enpassant.dst_row == row && abs(enpassant.dst_col - col) == 1){
               test = create_move(c, board->board[enpassant.dst_row][enpassant.dst_col], row, col, row + (color?1:-1), enpassant.dst_col, ENPASSANT, color);

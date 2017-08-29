@@ -6,6 +6,10 @@
 
 float weights[8][8];
 
+/*
+Calculates the net material for the color on the board by summing the pieces
+not taken
+*/
 float calculate_material(board_t *board, int color){
   int i;
   float result, sign;
