@@ -21,10 +21,13 @@ typedef struct{
   int has_moved;
 } piece_t;
 
+struct move_history;
+
 typedef struct{
   char board[8][8];
   //made this a type in case there are other properties we want to add
   piece_t pieces[2][16];
+  struct move_history* head;
 } board_t;
 
 board_t * create_board();

@@ -295,6 +295,9 @@ move_t *generate_moves(board_t *board, int color, int *length){
   free(moves);
   moves = NULL;
   *length = i;
+
+  print_history(board);
+
   return result;
 }
 
@@ -335,6 +338,7 @@ void print_move(move_t move){
 */
 void move_piece(board_t *board, move_t move, int color){
   int i;
+  add_node(board, move);
   board->board[move.src_row][move.src_col] = ' ';
   board->board[move.dst_row][move.dst_col] = move.moved;
   if(move.taken != ' '){
@@ -405,6 +409,7 @@ enpassant. Need actual move history for that
 */
 void undo_move(board_t *board, move_t move, int color){
   int i;
+  remove_node(board);
   board->board[move.src_row][move.src_col] = move.moved;
   board->board[move.dst_row][move.dst_col] = move.taken;
   if(move.taken != ' '){
@@ -714,4 +719,114 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }
     dst_row++;
   }
+}
+
+int isFirstNode = TRUE;
+
+void print_history(board_t* board) {
+  if(isFirstNode) {
+    printf("NULL\n");
+    return;
+  }
+
+  move_history_t* current_move;
+  current_move = board->head;
+  while(current_move != NULL) {
+    printf("move #%d\n", current_move->index);
+    printf("\t(%c%d) -> (%c%d)\n", current_move->move.src_col + 65, 8 - current_move->move.src_row, current_move->move.dst_col + 65, 8 - current_move->move.dst_row);
+    current_move = current_move->next_move;
+  }
+}
+
+void add_node(board_t* board, move_t move) {
+  move_history_t* new_head_pointer;
+  new_head_pointer = (move_history_t*)malloc(1*sizeof(move_history_t));
+  if(isFirstNode) {
+    new_head_pointer->index = 0;
+    new_head_pointer->next_move = NULL;
+    isFirstNode = FALSE;
+  } else {
+    new_head_pointer->index = board->head->index + 1;
+    new_head_pointer->next_move = board->head;
+  }
+  
+  new_head_pointer->move.taken = move.taken;
+  new_head_pointer->move.src_row = move.src_row;
+  new_head_pointer->move.src_col = move.src_col;
+  new_head_pointer->move.dst_row = move.dst_row;
+  new_head_pointer->move.dst_col = move.dst_col;
+  new_head_pointer->move.type = move.type;
+  new_head_pointer->move.color = move.color;
+  new_head_pointer->move.value = move.value;
+  new_head_pointer->move.children = move.children;
+  new_head_pointer->move.length = move.length;
+
+  board->head = new_head_pointer;
+}
+
+void remove_node(board_t* board) {
+  move_history_t* store = board->head;
+  if(board->head->index == 0) {
+    board->head->next_move = NULL;
+    isFirstNode = TRUE;
+  } else {
+    board->head = board->head->next_move;
+  }
+  
+  free(store);
+}
+
+move_t get_node(board_t* board, int index) {
+  //currently it indexes with the first move being move 0, but this might need to be flipped
+  //currently also returning the head if there is an issue
+  move_history_t* current_move;
+  current_move = board->head;
+
+  while(current_move != NULL) {
+    if(current_move->index == index) {
+      return current_move->move;
+    }
+  }
+
+  return board->head->move;
+}
+
+int contains_node(board_t* board, move_t move) {
+  move_history_t* current_move;
+  current_move = board->head;
+
+  while(current_move != NULL) {
+    if(move_equals(current_move->move, move)) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+int move_equals(move_t move1, move_t move2) {
+  //checks all parameters but this might want to be changed
+  if(move1.moved == move2.moved) {
+    if(move1.taken == move2.taken) {
+      if(move1.src_row == move2.src_row) {
+        if(move1.src_col == move2.src_col) {
+          if(move1.dst_row == move2.dst_row) {
+            if(move1.dst_col == move2.dst_col) {
+              if(move1.type == move2.type) {
+                if(move1.color == move2.color) {
+                  if(move1.value == move2.value) {
+                    if(move1.length == move2.length) {
+                      return 1;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return 0;
 }

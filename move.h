@@ -28,6 +28,12 @@ typedef struct move{
   int length;
 }move_t;
 
+typedef struct move_history{
+  int index;
+  move_t move;
+  struct move_history* next_move;
+} move_history_t;
+
 move_t enpassant;
 move_t castle[2];
 
@@ -42,5 +48,12 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
 void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
 
 move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color);
+
+void add_node(board_t* board, move_t move);
+void print_history(board_t* board);
+void remove_node(board_t* board);
+move_t get_node(board_t* board, int index);
+int contains_node(board_t* board, move_t move);
+int move_equals(move_t move1, move_t move2);
 
 #endif
