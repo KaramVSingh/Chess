@@ -97,9 +97,8 @@ int make_move(board_t *board, int color){
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
   move_piece(board, move, color);
-  draw(board);
   print_move(move);
-  return 0;
+  return 1;
 }
 
 /*

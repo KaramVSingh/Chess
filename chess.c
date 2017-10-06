@@ -78,8 +78,10 @@ int main(int argc, char** argv){
   printf("Beginning game\n");
   while(play){
     play = move(player1, board);
+    draw(board);
     if(play){
       play = move(player2, board);
+      draw(board);
     }
   }
 
