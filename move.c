@@ -11,6 +11,8 @@ int has_moved(board_t* board, char piece, int start_row, int start_col) {
         return 1;
       }
     }
+
+    temp = temp->next_move;
   }
 
   return 0;
