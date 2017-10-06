@@ -30,7 +30,7 @@ typedef struct move{
 
 typedef struct move_history{
   int index;
-  move_t move;
+  move_t* move;
   struct move_history* next_move;
 } move_history_t;
 
@@ -52,7 +52,7 @@ move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row
 void add_node(board_t* board, move_t move);
 void print_history(board_t* board);
 void remove_node(board_t* board);
-move_t get_node(board_t* board, int index);
+move_t* get_node(board_t* board, int index);
 int contains_node(board_t* board, move_t move);
 int move_equals(move_t move1, move_t move2);
 

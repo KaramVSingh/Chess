@@ -2,9 +2,23 @@
 #include <stdlib.h>
 #include "move.h"
 
+int has_moved(board_t* board, char piece, int start_row, int start_col) {
+  move_history_t* temp = board->head;
+
+  while(temp != NULL) {
+    if(temp->move->moved == piece) {
+      if(temp->move->src_row == start_row && temp->move->src_col == start_col) {
+        return 1;
+      }
+    }
+  }
+
+  return 0;
+}
+
 move_t *generate_moves(board_t *board, int color, int *length){
   move_t *moves, *result, test;
-  int i, j, row, col, dst_row, dst_col, shift;
+  int i, j, row, col, dst_row, dst_col, shift, index;
   char c;
 
   moves = (move_t *)malloc(MAX_MOVES*sizeof(move_t));
@@ -154,6 +168,56 @@ move_t *generate_moves(board_t *board, int color, int *length){
                     j++;
                   }
                   undo_move(board, test, color);
+                }
+              }
+            }
+
+            int start_row = (c == 'K' ? 0: 7);
+            char r = (c == 'K' ? 'R': 'r');
+            int can_castle = 1;
+            if(!has_moved(board, c, start_row, 4)) {
+
+              if(!has_moved(board, r, start_row, 0)){
+                for(index = 1; index < 4; index++) {
+                  if(board->board[start_row][index] != ' '){
+                    can_castle = 0;
+                  }
+                }
+                if(can_castle){
+                  for(index = 3; index > 0; index--){
+                    test = create_move(c, board->board[start_row][index], row, col, start_row, index, STANDARD, color);
+                    move_piece(board, test, color);
+                    if(check(board, color)){
+                      can_castle = 0;
+                    }
+                    undo_move(board, test, color);
+                  }
+                }
+                if(can_castle){
+                  test = create_move(c, r, row, col, start_row, 1, CASTLE, color);
+                  move_piece(board, test, color);
+                }
+              }
+              
+              if(!has_moved(board, r, start_row, 7)){
+                for(index = 5; index < 7; index++) {
+                  if(board->board[start_row][index] != ' '){
+                    can_castle = 0;
+                  }
+                }
+                if(can_castle){
+                  for(index = 6; index > 4; index--){
+                    test = create_move(c, board->board[start_row][index], row, col, start_row, index, STANDARD, color);
+                    move_piece(board, test, color);
+                    if(check(board, color)){
+                      can_castle = 0;
+                    }
+                    undo_move(board, test, color);
+                  }
+                }
+                if(can_castle){
+                  test = create_move(c, r, row, col, start_row, 6, CASTLE, color);
+                  move_piece(board, test, color);
                 }
               }
             }
@@ -721,10 +785,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
   }
 }
 
-int isFirstNode = TRUE;
-
 void print_history(board_t* board) {
-  if(isFirstNode) {
+  if(!board->head) {
     printf("NULL\n");
     return;
   }
@@ -733,7 +795,7 @@ void print_history(board_t* board) {
   current_move = board->head;
   while(current_move != NULL) {
     printf("move #%d\n", current_move->index);
-    printf("\t(%c%d) -> (%c%d)\n", current_move->move.src_col + 65, 8 - current_move->move.src_row, current_move->move.dst_col + 65, 8 - current_move->move.dst_row);
+    printf("\t(%c%d) -> (%c%d)\n", current_move->move->src_col + 65, 8 - current_move->move->src_row, current_move->move->dst_col + 65, 8 - current_move->move->dst_row);
     current_move = current_move->next_move;
   }
 }
@@ -741,42 +803,41 @@ void print_history(board_t* board) {
 void add_node(board_t* board, move_t move) {
   move_history_t* new_head_pointer;
   new_head_pointer = (move_history_t*)malloc(1*sizeof(move_history_t));
-  if(isFirstNode) {
+  new_head_pointer->move = (move_t*)malloc(1*sizeof(move_t));
+  if(board->head == NULL) {
     new_head_pointer->index = 0;
-    new_head_pointer->next_move = NULL;
-    isFirstNode = FALSE;
   } else {
     new_head_pointer->index = board->head->index + 1;
-    new_head_pointer->next_move = board->head;
   }
+
+
+  new_head_pointer->next_move = board->head;
   
-  new_head_pointer->move.taken = move.taken;
-  new_head_pointer->move.src_row = move.src_row;
-  new_head_pointer->move.src_col = move.src_col;
-  new_head_pointer->move.dst_row = move.dst_row;
-  new_head_pointer->move.dst_col = move.dst_col;
-  new_head_pointer->move.type = move.type;
-  new_head_pointer->move.color = move.color;
-  new_head_pointer->move.value = move.value;
-  new_head_pointer->move.children = move.children;
-  new_head_pointer->move.length = move.length;
+  new_head_pointer->move->taken = move.taken;
+  new_head_pointer->move->src_row = move.src_row;
+  new_head_pointer->move->src_col = move.src_col;
+  new_head_pointer->move->dst_row = move.dst_row;
+  new_head_pointer->move->dst_col = move.dst_col;
+  new_head_pointer->move->type = move.type;
+  new_head_pointer->move->color = move.color;
+  new_head_pointer->move->value = move.value;
+  new_head_pointer->move->children = move.children;
+  new_head_pointer->move->length = move.length;
 
   board->head = new_head_pointer;
 }
 
 void remove_node(board_t* board) {
   move_history_t* store = board->head;
-  if(board->head->index == 0) {
-    board->head->next_move = NULL;
-    isFirstNode = TRUE;
-  } else {
+  if(board->head) {
     board->head = board->head->next_move;
+    free(store->move);
   }
-  
+
   free(store);
 }
 
-move_t get_node(board_t* board, int index) {
+move_t* get_node(board_t* board, int index) {
   //currently it indexes with the first move being move 0, but this might need to be flipped
   //currently also returning the head if there is an issue
   move_history_t* current_move;
@@ -796,7 +857,7 @@ int contains_node(board_t* board, move_t move) {
   current_move = board->head;
 
   while(current_move != NULL) {
-    if(move_equals(current_move->move, move)) {
+    if(move_equals(*(current_move->move), move)) {
       return 1;
     }
   }
@@ -830,3 +891,4 @@ int move_equals(move_t move1, move_t move2) {
 
   return 0;
 }
+
