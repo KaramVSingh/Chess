@@ -1,0 +1,4 @@
+Debug mode: certain output (ai's available moves, move history, etc.) not visible unless in debug mode
+File output:
+ - Game Statistics
+ - Debug output
