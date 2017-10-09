@@ -45,7 +45,7 @@ int move(player_t *player, board_t *board){
     print_move(player_move);
     return 1;
   }else{
-    return make_move(board, player->piece_type);
+    return make_move(board, player->difficulty, player->piece_type);
   }
 
   return 1;

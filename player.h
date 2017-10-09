@@ -4,7 +4,7 @@
 
 typedef struct player_t {
   int is_human;
-  //int difficulty; later
+  int difficulty;
   int piece_type;
 } player_t;
 

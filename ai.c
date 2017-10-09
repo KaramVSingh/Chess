@@ -60,11 +60,11 @@ void init_ai(){
   right now this generates the array of available moves (mostly not return_val
   moves yet) and then randomly selects one
 */
-int make_move(board_t *board, int color){
-  int i, j, difficulty;
+int make_move(board_t *board, int difficulty, int color){
+  int i, j;
   float max_material = -INFINITY, temp;
   move_t parent, move;
-  difficulty = 1, j = 0;
+  j = 0;
 
   parent.children = generate_moves(board, color, &parent.length);
   if(difficulty == 1){

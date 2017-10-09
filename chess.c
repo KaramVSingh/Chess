@@ -18,14 +18,20 @@ int main(int argc, char** argv){
   scanf("%d", &num_players);
   if(num_players == 0){
     player1->is_human = FALSE;
+    printf("Enter difficulty for player 1 (0-1): ");
+    scanf("%d", &(player1->difficulty));
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
+    printf("Enter difficulty for player 2 (0-1): ");
+    scanf("%d", &(player2->difficulty));
     player2->piece_type = BLACK;
     init_ai();
   } else if(num_players == 1){
     player1->is_human = TRUE;
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
+    printf("Enter difficulty for player 2 (0-1): ");
+    scanf("%d", &(player2->difficulty));
     player2->piece_type = BLACK;
     init_ai();
   }else{
