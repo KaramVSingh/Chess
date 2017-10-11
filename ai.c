@@ -37,8 +37,9 @@ float evaluate_board(board_t *board, int difficulty, int color){
     case 1:
       value += calculate_material(board, color);
     case 0:
-      return value;
+      break;
   }
+  return value;
 }
 
 void init_ai(){
