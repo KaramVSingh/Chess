@@ -5,6 +5,9 @@
 #include <math.h>
 
 float weights[8][8];
+void alphabeta(board_t *board, move_t *move, int max, int depth, float alpha, float beta){
+  
+}
 
 /*
 Calculates the net material for the color on the board by summing the pieces
@@ -26,6 +29,10 @@ float calculate_material(board_t *board, int color){
   }
 
   return result;
+}
+
+float evaluate_move(board_t *board, move_t move, int difficulty, int color){
+  return 0.0f;
 }
 
 void init_ai(){
