@@ -18,20 +18,32 @@ int main(int argc, char** argv){
   scanf("%d", &num_players);
   if(num_players == 0){
     player1->is_human = FALSE;
-    printf("Enter difficulty for player 1 (0-1): ");
+    printf("Enter difficulty for player 1 (0-%d): ", MAX_DIFFICULTY);
     scanf("%d", &(player1->difficulty));
+    if(player1->difficulty < 0 || player1->difficulty > MAX_DIFFICULTY){
+      printf("ERROR: Invalid difficulty\n");
+      return 0;
+    }
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
-    printf("Enter difficulty for player 2 (0-1): ");
+    printf("Enter difficulty for player 2 (0-%d): ", MAX_DIFFICULTY);
     scanf("%d", &(player2->difficulty));
+    if(player2->difficulty < 0 || player2->difficulty > MAX_DIFFICULTY){
+      printf("ERROR: Invalid difficulty\n");
+      return 0;
+    }
     player2->piece_type = BLACK;
     init_ai();
   } else if(num_players == 1){
     player1->is_human = TRUE;
     player1->piece_type = WHITE;
     player2->is_human = FALSE;
-    printf("Enter difficulty for player 2 (0-1): ");
+    printf("Enter difficulty for player 2 (0-%d): ", MAX_DIFFICULTY);
     scanf("%d", &(player2->difficulty));
+    if(player2->difficulty < 0 || player2->difficulty > MAX_DIFFICULTY){
+      printf("ERROR: Invalid difficulty\n");
+      return 0;
+    }
     player2->piece_type = BLACK;
     init_ai();
   }else{

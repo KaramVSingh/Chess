@@ -2,6 +2,8 @@
 
 //player h file
 
+#define MAX_DIFFICULTY 1
+
 typedef struct player_t {
   int is_human;
   int difficulty;
