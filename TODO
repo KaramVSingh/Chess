@@ -2,6 +2,3 @@ Debug mode: certain output (ai's available moves, move history, etc.) not visibl
 File output:
  - Game Statistics
  - Debug output
-Difficulty:
- - Create MAX_DIFFICULTY parameter
- - Validate user input in that range
