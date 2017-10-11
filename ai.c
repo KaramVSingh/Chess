@@ -5,8 +5,8 @@
 #include <math.h>
 
 float weights[8][8];
-void alphabeta(board_t *board, move_t *move, int max, int depth, float alpha, float beta){
-  
+void alphabeta(board_t *board, move_t *move, int color, int difficulty, int depth, float alpha, float beta){
+
 }
 
 /*
@@ -31,8 +31,14 @@ float calculate_material(board_t *board, int color){
   return result;
 }
 
-float evaluate_move(board_t *board, move_t move, int difficulty, int color){
-  return 0.0f;
+float evaluate_board(board_t *board, int difficulty, int color){
+  float value = 0.0f;
+  switch(difficulty){
+    case 1:
+      value += calculate_material(board, color);
+    case 0:
+      return value;
+  }
 }
 
 void init_ai(){
