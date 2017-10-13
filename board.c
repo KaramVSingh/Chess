@@ -3,6 +3,14 @@
 #include "board.h"
 #include "move.h"
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 int check(board_t *board, int color);
 
 board_t *create_board(){
@@ -73,7 +81,13 @@ void draw(board_t * board){
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       c = board->board[i][j];
-      printf("| %c ",c);
+      printf("| ");
+      if(c > 90) {
+        printf(ANSI_COLOR_CYAN "%c " ANSI_COLOR_RESET ,c);
+      } else {
+        printf(ANSI_COLOR_GREEN "%c " ANSI_COLOR_RESET ,c);
+      }
+      
     }
     printf("| %d", 8-i);
     white_done = black_done = 0;
@@ -81,7 +95,7 @@ void draw(board_t * board){
     while(white_done < 2 && white < 16){
       if(board->pieces[WHITE][white].taken){
         white_done++;
-        printf("   %c", board->pieces[WHITE][white].name);
+        printf(ANSI_COLOR_CYAN "   %c" ANSI_COLOR_RESET , board->pieces[WHITE][white].name);
       }
       white++;
     }
@@ -91,7 +105,7 @@ void draw(board_t * board){
     while(black_done < 2 && black < 16){
       if(board->pieces[BLACK][black].taken){
         black_done++;
-        printf("   %c", board->pieces[BLACK][black].name);
+        printf(ANSI_COLOR_GREEN "   %c" ANSI_COLOR_RESET, board->pieces[BLACK][black].name);
       }
       black++;
     }
