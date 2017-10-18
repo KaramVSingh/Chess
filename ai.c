@@ -5,9 +5,6 @@
 #include <math.h>
 
 float weights[8][8];
-void alphabeta(board_t *board, move_t *move, int color, int difficulty, int depth, float alpha, float beta){
-
-}
 
 /*
 Calculates the net material for the color on the board by summing the pieces
@@ -17,7 +14,7 @@ float calculate_material(board_t *board, int color){
   int i;
   float result, sign;
 
-  sign = color?1.0:-1.0;
+  sign = color?-1.0:1.0;
   result = 0.0;
   for(i = 0; i < 16; i++){
     if(!board->pieces[WHITE][i].taken){
@@ -33,7 +30,9 @@ float calculate_material(board_t *board, int color){
 
 float evaluate_board(board_t *board, int difficulty, int color){
   float value = 0.0f;
+  //handle checkmate
   switch(difficulty){
+    case 2:
     case 1:
       value += calculate_material(board, color);
     case 0:
@@ -41,6 +40,64 @@ float evaluate_board(board_t *board, int difficulty, int color){
   }
   return value;
 }
+
+float alphabeta(board_t *board, move_t move, int color, int difficulty, int depth, float alpha, float beta){
+  int i;
+  float v, new;
+
+  if(depth == 0){
+    return evaluate_board(board, difficulty, !color);
+  }
+
+  if(move.length == 0){
+    return color? INFINITY: -INFINITY;
+  }
+
+  if(color){
+    v = -INFINITY;
+    for(i = 0; i < move.length; i++){
+      move_piece(board, move.children[i], color);
+      move.children[i].children = generate_moves(board, !color, &move.children[i].length);
+      new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
+      undo_move(board, move.children[i], color);
+      printf("Depth: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", depth, v, new, alpha);
+      print_move(move.children[i]);
+      v = (v > new ? v : new);
+      free(move.children[i].children);
+      move.children[i].children = NULL;
+      move.children[i].value = new;
+      alpha = (alpha > v? alpha: v);
+      if(beta <= v){
+        printf("Pruning, %f <= %f\n", beta, v);
+        break;
+      }
+    }
+    return v;
+  }else{
+    v = INFINITY;
+    for(i = 0; i < move.length; i++){
+      move_piece(board, move.children[i], color);
+      move.children[i].children = generate_moves(board, !color, &move.children[i].length);
+      new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
+      undo_move(board, move.children[i], color);
+      printf("Depth: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", depth, v, new, beta);
+      print_move(move.children[i]);
+      v = (v < new? v : new);
+      free(move.children[i].children);
+      move.children[i].children = NULL;
+      move.children[i].value = new;
+      beta = (beta < v? beta: v);
+      if(v <= alpha){
+        printf("Pruning, %f <= %f\n", v, alpha);
+        break;
+      }
+    }
+    return v;
+  }
+
+}
+
+
 
 void init_ai(){
   int i, j;
@@ -75,11 +132,24 @@ void init_ai(){
   moves yet) and then randomly selects one
 */
 int make_move(board_t *board, int difficulty, int color){
-  int i, j;
-  float max_material = -INFINITY, temp;
+  int i, j, depth;
+  float temp;
+  float alpha = -INFINITY, beta = INFINITY;
   move_t parent, move;
   j = 0;
 
+  depth = difficulty;
+
+  parent.children = generate_moves(board, color, &parent.length);
+  temp = alphabeta(board, parent, color, difficulty, depth, alpha, beta);
+  j = 0;
+  for(i = 0; i < parent.length; i++){
+    if(parent.children[i].value == temp){
+      parent.children[j] = parent.children[i];
+      j++;
+    }
+  }
+  /*
   parent.children = generate_moves(board, color, &parent.length);
   if(difficulty == 1){
     for(i = 0; i < parent.length; i++){
@@ -98,20 +168,22 @@ int make_move(board_t *board, int difficulty, int color){
     }
     parent.length = j;
   }
+  */
 
-  printf("Number of moves: %d\n", parent.length);
-  for(i = 0; i < parent.length; i++){
+  printf("Number of moves: %d\n", j);
+  for(i = 0; i < j; i++){
     print_move(parent.children[i]);
   }
-  if(parent.length == 0){
+  if(j == 0){
     printf("CHECKMATE\n");
     return 0;
   }
-  i = rand() % parent.length;
+  i = rand() % j;
   //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
   move_piece(board, move, color);
   print_move(move);
+  free(parent.children);
   return 1;
 }
 

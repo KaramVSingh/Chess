@@ -367,7 +367,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
   moves = NULL;
   *length = i;
 
-  print_history(board);
+  //print_history(board);
 
   return result;
 }
@@ -521,14 +521,16 @@ void undo_move(board_t *board, move_t move, int color){
            }
       }else if(board->pieces[!color][i].row == move.dst_row &&
         board->pieces[!color][i].col == move.dst_col &&
-        board->pieces[!color][i].name == move.taken){
+        board->pieces[!color][i].name == move.taken &&
+        board->pieces[!color][i].taken){
           board->pieces[!color][i].taken = FALSE;
         }
     }
   }
   for(i = 0; i < 16; i++){
     if(board->pieces[color][i].row == move.dst_row &&
-      board->pieces[color][i].col == move.dst_col){
+      board->pieces[color][i].col == move.dst_col &&
+      board->pieces[color][i].name == move.moved){
         if(move.type == PROMOTION){
           board->pieces[color][i].name = (color?'P':'p');
           board->pieces[color][i].val = 1;
