@@ -28,11 +28,13 @@ board_t *create_board(){
     result->pieces[BLACK][i].name = names[i];
     result->pieces[BLACK][i].val = values[i];
     result->pieces[BLACK][i].taken = 0;
+    result->pieces[BLACK][i].color = BLACK;
     result->pieces[WHITE][i].row = 7 - i/8;
     result->pieces[WHITE][i].col = cols[i];
     result->pieces[WHITE][i].name = names[i] + 32;
     result->pieces[WHITE][i].val = values[i];
     result->pieces[WHITE][i].taken = 0;
+    result->pieces[WHITE][i].color = WHITE;
   }
 
   for(i = 0; i < MAX_ROWS; i++){

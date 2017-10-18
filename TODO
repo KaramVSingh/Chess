@@ -2,3 +2,9 @@ Debug mode: certain output (ai's available moves, move history, etc.) not visibl
 File output:
  - Game Statistics
  - Debug output
+Promotion:
+ - Validation of input
+Move Struct:
+ - do we need color?
+Board:
+ - do we want upper/lowercase letters still?

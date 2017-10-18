@@ -15,8 +15,8 @@ typedef enum m_type{
 } m_type;
 
 typedef struct move{
-  char moved;
-  char taken;
+  piece_t *moved;
+  piece_t *captured;
   int src_row;
   int src_col;
   int dst_row;
@@ -44,10 +44,10 @@ void print_move(move_t move);
 void move_piece(board_t *board, move_t move, int color);
 void undo_move(board_t *board, move_t move, int color);
 
-void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
-void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index);
+void cardinal_moves(board_t *board, piece_t *piece, move_t *moves, int *index);
+void diagonal_moves(board_t *board, piece_t *piece, move_t *moves, int *index);
 
-move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color);
+move_t create_move(piece_t *moved, piece_t *taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color);
 
 void add_node(board_t* board, move_t move);
 void print_history(board_t* board);

@@ -12,16 +12,15 @@ not taken
 */
 float calculate_material(board_t *board, int color){
   int i;
-  float result, sign;
+  float result;
 
-  sign = color?-1.0:1.0;
   result = 0.0;
   for(i = 0; i < 16; i++){
     if(!board->pieces[WHITE][i].taken){
-      result -= sign*(board->pieces[WHITE][i].val);
+      result -= (board->pieces[WHITE][i].val);
     }
     if(!board->pieces[BLACK][i].taken){
-      result += sign*(board->pieces[BLACK][i].val);
+      result += (board->pieces[BLACK][i].val);
     }
   }
 
@@ -80,7 +79,7 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
       new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
-      printf("Depth: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", depth, v, new, beta);
+      printf("Color: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", color, v, new, beta);
       print_move(move.children[i]);
       v = (v < new? v : new);
       free(move.children[i].children);

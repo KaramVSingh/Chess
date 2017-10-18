@@ -2,6 +2,23 @@
 #include <stdlib.h>
 #include "move.h"
 
+piece_t *find_piece(board_t *board, int row, int col){
+  int i, color;
+  char c;
+
+  c = board->board[row][col];
+  color = (c > 96)? 0: 1;
+  for(i = 0; i < 16; i++){
+    if(board->pieces[color][i].row == row &&
+      board->pieces[color][i].col == col &&
+      board->pieces[color][i].name == c &&
+      !board->pieces[color][i].taken){
+      return &board->pieces[color][i];
+    }
+  }
+  return NULL;
+}
+
 int has_moved(board_t* board, char piece, int start_row, int start_col) {
   move_history_t* temp = board->head;
 
@@ -10,7 +27,7 @@ int has_moved(board_t* board, char piece, int start_row, int start_col) {
   }
 
   while(temp != NULL) {
-    if(temp->move->moved == piece) {
+    if(temp->move->moved->name == piece) {
       if(temp->move->src_row == start_row && temp->move->src_col == start_col) {
         return 1;
       }
@@ -26,17 +43,19 @@ move_t *generate_moves(board_t *board, int color, int *length){
   move_t *moves, *result, test;
   int i, j, row, col, dst_row, dst_col, shift, index;
   char c;
+  piece_t *moved, *captured;
 
   moves = (move_t *)malloc(MAX_MOVES*sizeof(move_t));
   for(j = 0; j < MAX_MOVES; j++){
-    moves[j] = create_move('A', 'Z', 0, 0, 0, 0, NOMOVE, color);
+    moves[j] = create_move(NULL, NULL, 0, 0, 0, 0, NOMOVE, color);
   }
   j = 0;
   for(i = 0; i < 16; i++){
-    if(!board->pieces[color][i].taken){
-      row = board->pieces[color][i].row;
-      col = board->pieces[color][i].col;
-      c = board->pieces[color][i].name;
+    moved = &board->pieces[color][i];
+    if(!moved->taken){
+      row = moved->row;
+      col = moved->col;
+      c = moved->name;
       switch(c){
         case 'P':
         case 'p':
@@ -46,16 +65,21 @@ move_t *generate_moves(board_t *board, int color, int *length){
           if(row == (color?6:1)){
             shift = (color?0:32);
             if(board->board[dst_row][dst_col] == ' '){
-              test = create_move('Q'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+              captured = find_piece(board, dst_row, dst_col);
+              moved->name = 'Q' + shift;
+              test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
                 j++;
-                moves[j] = create_move('R'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+                moved->name = 'N' + shift;
+                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                 j++;
-                moves[j] = create_move('N'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+                moved->name = 'B' + shift;
+                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                 j++;
-                moves[j] = create_move('B'+shift, ' ', row, col, dst_row, dst_col, PROMOTION, color);
+                moved->name = 'R' + shift;
+                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                 j++;
               }
               undo_move(board, test, color);
@@ -64,16 +88,21 @@ move_t *generate_moves(board_t *board, int color, int *length){
             if(col + 1 < MAX_COLS){
               dst_col = col + 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                test = create_move('Q'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                captured = find_piece(board, dst_row, dst_col);
+                moved->name = 'Q' + shift;
+                test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                 move_piece(board, test, color);
                 if(!check(board, color)){
                   moves[j] = test;
                   j++;
-                  moves[j] = create_move('R'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'N' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
-                  moves[j] = create_move('N'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'B' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
-                  moves[j] = create_move('B'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'R' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
                 }
                 undo_move(board, test, color);
@@ -82,16 +111,21 @@ move_t *generate_moves(board_t *board, int color, int *length){
             if(col - 1 >= 0){
               dst_col = col - 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                test = create_move('Q'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                captured = find_piece(board, dst_row, dst_col);
+                moved->name = 'Q' + shift;
+                test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                 move_piece(board, test, color);
                 if(!check(board, color)){
                   moves[j] = test;
                   j++;
-                  moves[j] = create_move('R'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'N' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
-                  moves[j] = create_move('N'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'B' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
-                  moves[j] = create_move('B'+shift, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PROMOTION, color);
+                  moved->name = 'R' + shift;
+                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
                   j++;
                 }
                 undo_move(board, test, color);
@@ -100,7 +134,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           }else{
             //standard move
             if(board->board[dst_row][dst_col] == ' '){
-              test = create_move(c, ' ', row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -111,7 +146,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
             if(col + 1 < MAX_COLS){
               dst_col = col + 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                captured = find_piece(board, dst_row, dst_col);
+                test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
                 move_piece(board, test, color);
                 if(!check(board, color)){
                   moves[j] = test;
@@ -123,7 +159,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
             if(col - 1 >= 0){
               dst_col = col - 1;
               if(board->board[dst_row][dst_col] != ' ' && board->board[dst_row][dst_col]/96 == color?1:0){
-                test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                captured = find_piece(board, dst_row, dst_col);
+                test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
                 move_piece(board, test, color);
                 if(!check(board, color)){
                   moves[j] = test;
@@ -139,7 +176,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
             dst_col = col;
             //TODO: check if space in front is empty
             if(board->board[dst_row][dst_col] == ' '){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, PREENPASSANT, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, PREENPASSANT, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -151,7 +189,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           //enpassant
           if(enpassant.type == PREENPASSANT){
             if(enpassant.dst_row == row && abs(enpassant.dst_col - col) == 1){
-              test = create_move(c, board->board[enpassant.dst_row][enpassant.dst_col], row, col, row + (color?1:-1), enpassant.dst_col, ENPASSANT, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, row + (color?1:-1), enpassant.dst_col, ENPASSANT, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -167,7 +206,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
             for(dst_col = col - 1; dst_col <= col + 1; dst_col++){
               if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
                 if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-                  test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+                  captured = find_piece(board, dst_row, dst_col);
+                  test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
                   move_piece(board, test, color);
                   if(!check(board, color)){
                     moves[j] = test;
@@ -191,7 +231,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
               if(can_castle){
                 for(index = 3; index > 0; index--){
-                  test = create_move(c, board->board[start_row][index], row, col, start_row, index, STANDARD, color);
+                  test = create_move(moved, NULL, row, col, start_row, index, STANDARD, color);
                   move_piece(board, test, color);
                   if(check(board, color)){
                     can_castle = 0;
@@ -200,7 +240,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
                 }
               }
               if(can_castle){
-                test = create_move(c, r, row, col, start_row, 1, CASTLE, color);
+                test = create_move(moved, NULL, row, col, start_row, 1, CASTLE, color);
                 moves[j] = test;
                 j++;
               }
@@ -214,7 +254,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
               }
               if(can_castle){
                 for(index = 6; index > 4; index--){
-                  test = create_move(c, board->board[start_row][index], row, col, start_row, index, STANDARD, color);
+                  test = create_move(moved, NULL, row, col, start_row, index, STANDARD, color);
                   move_piece(board, test, color);
                   if(check(board, color)){
                     can_castle = 0;
@@ -223,7 +263,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
                 }
               }
               if(can_castle){
-                test = create_move(c, r, row, col, start_row, 6, CASTLE, color);
+                test = create_move(moved, NULL, row, col, start_row, 6, CASTLE, color);
                 moves[j] = test;
                 j++;
               }
@@ -236,7 +276,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col + 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -249,7 +290,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col - 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -262,7 +304,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col - 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -275,7 +318,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col + 2;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -288,7 +332,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col + 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -301,7 +346,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col - 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -314,7 +360,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col - 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -327,7 +374,8 @@ move_t *generate_moves(board_t *board, int color, int *length){
           dst_col = col + 1;
           if(0 <= dst_row && dst_row < MAX_ROWS && 0 <= dst_col && dst_col < MAX_COLS){
             if(board->board[dst_row][dst_col] == ' ' || board->board[dst_row][dst_col]/96 == color?1:0){
-              test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+              captured = find_piece(board, dst_row, dst_col);
+              test = create_move(moved, captured, row, col, dst_row, dst_col, STANDARD, color);
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
@@ -339,16 +387,16 @@ move_t *generate_moves(board_t *board, int color, int *length){
           break;
         case 'R':
         case 'r':
-          cardinal_moves(board, board->pieces[color][i], moves, &j);
+          cardinal_moves(board, moved, moves, &j);
           break;
         case 'Q':
         case 'q':
-          cardinal_moves(board, board->pieces[color][i], moves, &j);
-          diagonal_moves(board, board->pieces[color][i], moves, &j);
+          cardinal_moves(board, moved, moves, &j);
+          diagonal_moves(board, moved, moves, &j);
           break;
         case 'B':
         case 'b':
-          diagonal_moves(board, board->pieces[color][i], moves, &j);
+          diagonal_moves(board, moved, moves, &j);
           break;
         default:
           break;
@@ -356,7 +404,7 @@ move_t *generate_moves(board_t *board, int color, int *length){
     }
   }
   i = 0;
-  while(moves[i].moved != 'A'){
+  while(moves[i].moved != NULL){
     i++;
   }
   result = (move_t *) malloc(i*sizeof(move_t));
@@ -400,10 +448,10 @@ void print_move(move_t move){
       printf("King swaps with the right Rook\n");
     }
   }else{
-    printf("Piece %c moves from %c%d to %c%d", move.moved, (char)(move.src_col + 65), 8-move.src_row,
+    printf("Piece %c moves from %c%d to %c%d", move.moved->name, (char)(move.src_col + 65), 8-move.src_row,
       (char)(move.dst_col + 65), 8-move.dst_row);
-    if(move.taken != ' '){
-      printf(" taking piece %c\n", move.taken);
+    if(move.captured != NULL){
+      printf(" taking piece %c\n", move.captured->name);
     }else{
       printf("\n");
     }
@@ -416,22 +464,21 @@ void print_move(move_t move){
   be later
 */
 void move_piece(board_t *board, move_t move, int color){
-  int i;
   add_node(board, move);
 
   board->board[move.src_row][move.src_col] = ' ';
-  board->board[move.dst_row][move.dst_col] = move.moved;
+  board->board[move.dst_row][move.dst_col] = move.moved->name;
   if(move.type == CASTLE){
     if(move.dst_col == 6){
       board->board[move.src_row][7] = ' ';
-      board->board[move.src_row][5] = move.taken;
+      board->board[move.src_row][5] = move.moved->color? 'R':'r';
       board->pieces[color][7].row = move.src_row;
       board->pieces[color][7].col = 5;
       board->pieces[color][0].row =move.src_row;
       board->pieces[color][0].col = 6;
     }else{
       board->board[move.src_row][0] = ' ';
-      board->board[move.src_row][2] = ' ';
+      board->board[move.src_row][2] = move.moved->color? 'R':'r'; //TODO: check this
       board->pieces[color][6].row = move.src_row;
       board->pieces[color][6].col = 2;
       board->pieces[color][0].row =move.src_row;
@@ -439,48 +486,30 @@ void move_piece(board_t *board, move_t move, int color){
     }
     return;
   }
-  if(move.taken != ' '){
-    for(i = 0; i < 16; i++){
-      if(move.type == ENPASSANT){
-        if(board->pieces[!color][i].row == move.dst_row + (color?-1:1) &&
-           board->pieces[!color][i].col == move.dst_col &&
-           board->pieces[!color][i].name == move.taken){
-             board->pieces[!color][i].taken = TRUE;
-           }
-      }else if(board->pieces[!color][i].row == move.dst_row &&
-        board->pieces[!color][i].col == move.dst_col &&
-        board->pieces[!color][i].name == move.taken){
-          board->pieces[!color][i].taken = TRUE;
-      }
-    }
+  if(move.captured != NULL){
+    move.captured->taken = TRUE;
   }
 
-  for(i = 0; i < 16; i++){
-    if(board->pieces[color][i].row == move.src_row &&
-      board->pieces[color][i].col == move.src_col){
-        if(move.type == PROMOTION){
-          board->pieces[color][i].name = move.moved;
-          switch(move.moved){
-            case 'Q':
-            case 'q':
-              board->pieces[color][i].val = 9;
-              break;
-            case 'R':
-            case 'r':
-              board->pieces[color][i].val = 5;
-              break;
-            case 'N':
-            case 'n':
-            case 'B':
-            case 'b':
-              board->pieces[color][i].val = 3;
-              break;
-          }
-        }
-        board->pieces[color][i].row = move.dst_row;
-        board->pieces[color][i].col = move.dst_col;
-      }
+  if(move.type == PROMOTION){
+    switch(move.moved->name){
+      case 'Q':
+      case 'q':
+        move.moved->val = 9;
+        break;
+      case 'R':
+      case 'r':
+        move.moved->val = 5;
+        break;
+      case 'N':
+      case 'n':
+      case 'B':
+      case 'b':
+        move.moved->val = 3;
+        break;
     }
+  }
+  move.moved->row = move.dst_row;
+  move.moved->col = move.dst_col;
     if(move.type != PREENPASSANT){
       if(enpassant.type == PREENPASSANT){
         enpassant.type = STANDARD;
@@ -489,7 +518,7 @@ void move_piece(board_t *board, move_t move, int color){
       }
     }else{
       enpassant.moved = move.moved;
-      enpassant.taken = move.taken;
+      enpassant.captured = move.captured;
       enpassant.src_row = move.src_row;
       enpassant.src_col = move.src_col;
       enpassant.dst_row = move.dst_row;
@@ -507,38 +536,23 @@ NOTE: undoing multiple times will not work with current implementation of
 enpassant. Need actual move history for that
 */
 void undo_move(board_t *board, move_t move, int color){
-  int i;
   remove_node(board);
-  board->board[move.src_row][move.src_col] = move.moved;
-  board->board[move.dst_row][move.dst_col] = move.taken;
-  if(move.taken != ' '){
-    for(i = 0; i < 16; i++){
-      if(move.type == ENPASSANT){
-        if(board->pieces[!color][i].row == move.dst_row + (color?-1:1) &&
-           board->pieces[!color][i].col == move.dst_col &&
-           board->pieces[!color][i].name == move.taken){
-             board->pieces[!color][i].taken = FALSE;
-           }
-      }else if(board->pieces[!color][i].row == move.dst_row &&
-        board->pieces[!color][i].col == move.dst_col &&
-        board->pieces[!color][i].name == move.taken &&
-        board->pieces[!color][i].taken){
-          board->pieces[!color][i].taken = FALSE;
-        }
-    }
+  board->board[move.src_row][move.src_col] = move.moved->name;
+  if(move.captured != NULL){
+    board->board[move.dst_row][move.dst_col] = move.captured->name;
+  }else{
+    board->board[move.dst_row][move.dst_col] = ' ';
   }
-  for(i = 0; i < 16; i++){
-    if(board->pieces[color][i].row == move.dst_row &&
-      board->pieces[color][i].col == move.dst_col &&
-      board->pieces[color][i].name == move.moved){
-        if(move.type == PROMOTION){
-          board->pieces[color][i].name = (color?'P':'p');
-          board->pieces[color][i].val = 1;
-        }
-        board->pieces[color][i].row = move.src_row;
-        board->pieces[color][i].col = move.src_col;
-      }
+  
+  if(move.captured != NULL){
+    move.captured->taken = FALSE;
   }
+  if(move.type == PROMOTION){
+    move.moved->name = (color?'P':'p');
+    move.moved->val = 1;
+  }
+  move.moved->row = move.src_row;
+  move.moved->col = move.src_col;
   if(enpassant.type == STANDARD){
     enpassant.type = PREENPASSANT;
   }else if(enpassant.type == PREENPASSANT){
@@ -546,11 +560,11 @@ void undo_move(board_t *board, move_t move, int color){
   }
 }
 
-move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color){
+move_t create_move(piece_t *moved, piece_t *captured, int src_row, int src_col, int dst_row, int dst_col, m_type type, int color){
   move_t move;
 
   move.moved = moved;
-  move.taken = taken;
+  move.captured = captured;
   move.src_row = src_row;
   move.src_col = src_col;
   move.dst_row = dst_row;
@@ -559,19 +573,19 @@ move_t create_move(char moved, char taken, int src_row, int src_col, int dst_row
   move.color = color;
   move.value = 0.0;
   move.children = NULL;
+  move.length = 0;
 
   return move;
 }
 
-void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
+void diagonal_moves(board_t *board, piece_t *piece, move_t *moves, int *index){
   int row, col, dst_row, dst_col, done,color;
-  char c;
   move_t test;
+  piece_t *captured;
 
-  row = piece.row;
-  col = piece.col;
-  c = piece.name;
-  color = !(c/96);
+  row = piece->row;
+  col = piece->col;
+  color = piece->color;
   //up left
   dst_row = row - 1;
   dst_col = col - 1;
@@ -582,7 +596,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -591,7 +606,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -612,7 +628,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -621,7 +638,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -642,7 +660,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -651,7 +670,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -672,7 +692,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -681,7 +702,8 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -695,15 +717,14 @@ void diagonal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
 }
 
 
-void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
+void cardinal_moves(board_t *board, piece_t *piece, move_t *moves, int *index){
   int row, col, dst_row, dst_col, done,color;
-  char c;
   move_t test;
+  piece_t *captured;
 
-  row = piece.row;
-  col = piece.col;
-  c = piece.name;
-  color = !(c/96);
+  row = piece->row;
+  col = piece->col;
+  color = piece->color;
   //left
   dst_row = row;
   dst_col = col - 1;
@@ -714,7 +735,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -723,7 +745,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -743,7 +766,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -752,7 +776,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -772,7 +797,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -781,7 +807,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -801,7 +828,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
     }else if(board->board[dst_row][dst_col] != ' '){
       done = TRUE;
       if(board->board[dst_row][dst_col]/96 == color?1:0){
-        test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+        captured = find_piece(board, dst_row, dst_col);
+        test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
         move_piece(board, test, color);
         if(!check(board, color)){
           moves[*index] = test;
@@ -810,7 +838,8 @@ void cardinal_moves(board_t *board, piece_t piece, move_t *moves, int *index){
         undo_move(board, test, color);
       }
     }else{
-      test = create_move(c, board->board[dst_row][dst_col], row, col, dst_row, dst_col, STANDARD, color);
+      captured = find_piece(board, dst_row, dst_col);
+      test = create_move(piece, captured, row, col, dst_row, dst_col, STANDARD, color);
       move_piece(board, test, color);
       if(!check(board, color)){
         moves[*index] = test;
@@ -850,7 +879,8 @@ void add_node(board_t* board, move_t move) {
 
   new_head_pointer->next_move = board->head;
 
-  new_head_pointer->move->taken = move.taken;
+  new_head_pointer->move->moved = move.moved;
+  new_head_pointer->move->captured = move.captured;
   new_head_pointer->move->src_row = move.src_row;
   new_head_pointer->move->src_col = move.src_col;
   new_head_pointer->move->dst_row = move.dst_row;
@@ -904,27 +934,7 @@ int contains_node(board_t* board, move_t move) {
 
 int move_equals(move_t move1, move_t move2) {
   //checks all parameters but this might want to be changed
-  if(move1.moved == move2.moved) {
-    if(move1.taken == move2.taken) {
-      if(move1.src_row == move2.src_row) {
-        if(move1.src_col == move2.src_col) {
-          if(move1.dst_row == move2.dst_row) {
-            if(move1.dst_col == move2.dst_col) {
-              if(move1.type == move2.type) {
-                if(move1.color == move2.color) {
-                  if(move1.value == move2.value) {
-                    if(move1.length == move2.length) {
-                      return 1;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  
 
   return 0;
 }

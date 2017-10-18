@@ -19,6 +19,7 @@ typedef struct{
   int val;
   int taken;
   int has_moved;
+  int color;
 } piece_t;
 
 struct move_history;
