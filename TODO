@@ -8,3 +8,5 @@ Move Struct:
  - do we need color?
 Board:
  - do we want upper/lowercase letters still?
+ Castling:
+ - Undo is broken

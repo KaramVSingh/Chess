@@ -59,7 +59,7 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
       new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
-      printf("Depth: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", depth, v, new, alpha);
+      printf("Color: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", color, v, new, alpha);
       print_move(move.children[i]);
       v = (v > new ? v : new);
       free(move.children[i].children);
