@@ -550,6 +550,12 @@ void undo_move(board_t *board, move_t move, int color){
   if(move.type == PROMOTION){
     move.moved->name = (color?'P':'p');
     move.moved->val = 1;
+  }else if(move.type == CASTLE){
+    if(move.dst_col == 6){
+      board->pieces[color][7].col = 0;
+    }else{
+      board->pieces[color][6].col = 0;
+    }
   }
   move.moved->row = move.src_row;
   move.moved->col = move.src_col;
