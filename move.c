@@ -537,7 +537,7 @@ enpassant. Need actual move history for that
 */
 void undo_move(board_t *board, move_t move, int color){
   remove_node(board);
-  board->board[move.src_row][move.src_col] = move.moved->name;
+  
   if(move.captured != NULL){
     board->board[move.dst_row][move.dst_col] = move.captured->name;
   }else{
@@ -557,6 +557,7 @@ void undo_move(board_t *board, move_t move, int color){
       board->pieces[color][6].col = 0;
     }
   }
+  board->board[move.src_row][move.src_col] = move.moved->name;
   move.moved->row = move.src_row;
   move.moved->col = move.src_col;
   if(enpassant.type == STANDARD){

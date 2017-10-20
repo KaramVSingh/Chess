@@ -61,10 +61,10 @@ int move(player_t *player, board_t *board){
       }
       player_move = create_move(p_moved, p_captured, src_row, src_col, dst_row, dst_col, NOMOVE, color);
     }while(!validate_move(&player_move, move.children, move.length));
-    if(move.type == PROMOTION){
+    if(player_move.type == PROMOTION){
       //fix this later
       printf("Promotion! Choose your piece: ");
-      scanf("%c", &player_move.moved->name);
+      scanf(" %c", &player_move.moved->name);
     }
     move_piece(board, player_move, color);
     print_move(player_move);
