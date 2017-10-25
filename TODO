@@ -4,7 +4,12 @@ File output:
  - Debug output
 Promotion:
  - Validation of input
+ - AI Promotion broken
 Move Struct:
  - do we need color?
 Board:
  - do we want upper/lowercase letters still?
+Strategy:
+ - Checkmate strategy
+ - limit openings
+Stalemate being treated as a checkmate
