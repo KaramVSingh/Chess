@@ -17,6 +17,7 @@ typedef enum m_type{
 typedef struct move{
   piece_t *moved;
   piece_t *captured;
+  char name;
   int src_row;
   int src_col;
   int dst_row;

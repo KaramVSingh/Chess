@@ -68,18 +68,25 @@ move_t *generate_moves(board_t *board, int color, int *length){
               captured = find_piece(board, dst_row, dst_col);
               moved->name = 'Q' + shift;
               test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+              test.name = 'Q' + shift;
               move_piece(board, test, color);
               if(!check(board, color)){
                 moves[j] = test;
                 j++;
                 moved->name = 'N' + shift;
-                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test.name = 'N' + shift;
+                moves[j] = test;
                 j++;
                 moved->name = 'B' + shift;
-                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test.name = 'B' + shift;
+                moves[j] = test;
                 j++;
                 moved->name = 'R' + shift;
-                moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test.name = 'R' + shift;
+                moves[j] = test;
                 j++;
               }
               undo_move(board, test, color);
@@ -91,20 +98,27 @@ move_t *generate_moves(board_t *board, int color, int *length){
                 captured = find_piece(board, dst_row, dst_col);
                 moved->name = 'Q' + shift;
                 test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test.name = 'Q' + shift;
                 move_piece(board, test, color);
-                if(!check(board, color)){
-                  moves[j] = test;
-                  j++;
-                  moved->name = 'N' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
-                  j++;
-                  moved->name = 'B' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
-                  j++;
-                  moved->name = 'R' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
-                  j++;
-                }
+                  if(!check(board, color)){
+                    moves[j] = test;
+                    j++;
+                    moved->name = 'N' + shift;
+                    test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                    test.name = 'N' + shift;
+                    moves[j] = test;
+                    j++;
+                    moved->name = 'B' + shift;
+                    test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                    test.name = 'B' + shift;
+                    moves[j] = test;
+                    j++;
+                    moved->name = 'R' + shift;
+                    test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                    test.name = 'R' + shift;
+                    moves[j] = test;
+                    j++;
+                  }
                 undo_move(board, test, color);
               }
             }
@@ -114,18 +128,25 @@ move_t *generate_moves(board_t *board, int color, int *length){
                 captured = find_piece(board, dst_row, dst_col);
                 moved->name = 'Q' + shift;
                 test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                test.name = 'Q' + shift;
                 move_piece(board, test, color);
                 if(!check(board, color)){
                   moves[j] = test;
                   j++;
                   moved->name = 'N' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test.name = 'N' + shift;
+                  moves[j] = test;
                   j++;
                   moved->name = 'B' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test.name = 'B' + shift;
+                  moves[j] = test;
                   j++;
                   moved->name = 'R' + shift;
-                  moves[j] = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test = create_move(moved, captured, row, col, dst_row, dst_col, PROMOTION, color);
+                  test.name = 'R' + shift;
+                  moves[j] = test;
                   j++;
                 }
                 undo_move(board, test, color);
@@ -491,7 +512,8 @@ void move_piece(board_t *board, move_t move, int color){
   }
 
   if(move.type == PROMOTION){
-    switch(move.moved->name){
+    move.moved->name = move.name;
+    switch(move.name){
       case 'Q':
       case 'q':
         move.moved->val = 9;
