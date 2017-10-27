@@ -12,3 +12,4 @@ Strategy:
  - Checkmate strategy
  - limit openings
 Stalemate being treated as a checkmate
+Clean up stuff with move.c, plenty of unneeded stuff with new move struct
