@@ -12,4 +12,6 @@ Strategy:
  - Checkmate strategy
  - limit openings
 Stalemate being treated as a checkmate
-Clean up stuff with move.c, plenty of unneeded stuff with new move struct
+Clean up:
+ - stuff with move.c, plenty of unneeded stuff with new move struct
+ - board.c check probably could/should get cleaned up
