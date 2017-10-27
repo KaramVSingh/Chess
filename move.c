@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "move.h"
+#include "global.h"
 
 piece_t *find_piece(board_t *board, int row, int col){
   int i, color;
@@ -446,33 +447,67 @@ move_t *generate_moves(board_t *board, int color, int *length){
   for debugging purposes, prints out a move in a nice format
 */
 void print_move(move_t move){
+  int color = move.moved->color;
   switch (move.type){
     case NOMOVE:
     case STANDARD:
       break;
     case PREENPASSANT:
-      printf("Pre En Passant! ");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "Pre En Passant! " ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "Pre En Passant! " ANSI_COLOR_RESET);
+      }
       break;
     case ENPASSANT:
-      printf("En Passant! ");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "En Passant! " ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "En Passant! " ANSI_COLOR_RESET);
+      }
       break;
     case CASTLE:
-      printf("Castle! ");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "Castle! " ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "Castle! " ANSI_COLOR_RESET);
+      }
       break;
     case PROMOTION:
-      printf("Promotion! ");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "Promotion! " ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "Promotion! " ANSI_COLOR_RESET);
+      }
   }
   if(move.type == CASTLE){
     if(move.dst_col < 4){
-      printf("King swaps with the left Rook\n");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "King swaps with the left Rook\n" ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "King swaps with the left Rook\n" ANSI_COLOR_RESET);
+      }
     }else{
-      printf("King swaps with the right Rook\n");
+      if(!color){
+        printf(ANSI_COLOR_CYAN "King swaps with the right Rook\n" ANSI_COLOR_RESET);
+      }else{
+        printf(ANSI_COLOR_GREEN "King swaps with the right Rook\n" ANSI_COLOR_RESET);
+      }
     }
   }else{
-    printf("Piece %c moves from %c%d to %c%d", move.moved->name, (char)(move.src_col + 65), 8-move.src_row,
+    if(!color){
+      printf(ANSI_COLOR_CYAN "Piece %c moves from %c%d to %c%d" ANSI_COLOR_RESET, move.moved->name, (char)(move.src_col + 65), 8-move.src_row,
       (char)(move.dst_col + 65), 8-move.dst_row);
+    }else{
+      printf(ANSI_COLOR_GREEN "Piece %c moves from %c%d to %c%d" ANSI_COLOR_RESET, move.moved->name, (char)(move.src_col + 65), 8-move.src_row,
+      (char)(move.dst_col + 65), 8-move.dst_row);
+    }
     if(move.captured != NULL){
-      printf(" taking piece %c\n", move.captured->name);
+      if(!color){
+        printf(ANSI_COLOR_CYAN " taking piece %c\n" ANSI_COLOR_RESET, move.captured->name);
+      }else{
+        printf(ANSI_COLOR_GREEN " taking piece %c\n" ANSI_COLOR_RESET, move.captured->name);
+      }
     }else{
       printf("\n");
     }

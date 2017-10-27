@@ -1,16 +1,6 @@
 #if !defined(BOARD_H)
 #define BOARD_H
 
-#define MAX_ROWS 8
-#define MAX_COLS 8
-#define WHITE 0
-#define BLACK 1
-#define TRUE 1
-#define FALSE 0
-#define CHECK 1
-#define CHECKMATE -1
-#define NO_CHECK 0
-
 
 typedef struct{
   char name;

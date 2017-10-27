@@ -4,6 +4,8 @@
 #include <time.h>
 #include <math.h>
 
+#include "global.h"
+
 float weights[8][8];
 
 /*
@@ -59,15 +61,19 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
       new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
-      printf("Color: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", color, v, new, alpha);
-      print_move(move.children[i]);
+      if(DEBUG){
+        printf("Color: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", color, v, new, alpha);
+        print_move(move.children[i]);
+      }
       v = (v > new ? v : new);
       free(move.children[i].children);
       move.children[i].children = NULL;
       move.children[i].value = new;
       alpha = (alpha > v? alpha: v);
       if(beta <= v){
-        printf("Pruning, %f <= %f\n", beta, v);
+        if(DEBUG){
+          printf("Pruning, %f <= %f\n", beta, v);
+        }
         break;
       }
     }
@@ -79,15 +85,19 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
       new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
-      printf("Color: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", color, v, new, beta);
-      print_move(move.children[i]);
+      if(DEBUG){
+        printf("Color: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", color, v, new, beta);
+        print_move(move.children[i]);
+      }
       v = (v < new? v : new);
       free(move.children[i].children);
       move.children[i].children = NULL;
       move.children[i].value = new;
       beta = (beta < v? beta: v);
       if(v <= alpha){
-        printf("Pruning, %f <= %f\n", v, alpha);
+        if(DEBUG){
+          printf("Pruning, %f <= %f\n", v, alpha);
+        }
         break;
       }
     }
@@ -148,37 +158,19 @@ int make_move(board_t *board, int difficulty, int color){
       j++;
     }
   }
-  /*
-  parent.children = generate_moves(board, color, &parent.length);
-  if(difficulty == 1){
-    for(i = 0; i < parent.length; i++){
-      move_piece(board, parent.children[i], color);
-      temp = calculate_material(board, color);
-      if(temp > max_material){
-        j = 0;
-        parent.children[j] = parent.children[i];
-        max_material = temp;
-        j++;
-      }else if (temp == max_material){
-        parent.children[j] = parent.children[i];
-        j++;
-      }
-      undo_move(board, parent.children[i], color);
-    }
-    parent.length = j;
-  }
-  */
 
-  printf("Number of moves: %d\n", j);
-  for(i = 0; i < j; i++){
-    print_move(parent.children[i]);
+  if(DEBUG){
+    printf("Number of moves: %d\n", j);
+    for(i = 0; i < j; i++){
+      print_move(parent.children[i]);
+    }
   }
+
   if(j == 0){
     printf("CHECKMATE\n");
     return 0;
   }
   i = rand() % j;
-  //alphabeta(board, &parent, TRUE, 0, -1000, 1000);
   move = parent.children[i];
   move_piece(board, move, color);
   print_move(move);

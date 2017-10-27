@@ -3,6 +3,7 @@
 #include <string.h>
 #include "ai.h"
 #include "player.h"
+#include "global.h"
 
 int main(int argc, char** argv){
   int play, num_players, i, row;
@@ -70,7 +71,6 @@ int main(int argc, char** argv){
       i = 1;
       while(i){
         printf("Add piece: ");
-        //TODO:fix this
         scanf(" %c", &piece);
         if(piece == 'd'){
           i = 0;
@@ -88,6 +88,9 @@ int main(int argc, char** argv){
           draw(board);
         }
       }
+    }else if(strcmp(argv[1], "-d") == 0){
+      DEBUG = 1;
+      printf("Debugging mode active!\n");
     }else{
       printf("Error: usage\n");
       return 0;

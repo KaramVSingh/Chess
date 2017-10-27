@@ -3,8 +3,6 @@
 
 #include "board.h"
 
-#define MAX_MOVES 220
-
 typedef enum m_type{
   NOMOVE,
   STANDARD,
