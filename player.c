@@ -12,7 +12,8 @@ int validate_move(move_t *move, move_t *moves, int length){
        moves[i].src_col == move->src_col &&
        moves[i].dst_row == move->dst_row &&
        moves[i].dst_col == move->dst_col &&
-       moves[i].moved == move->moved){
+       moves[i].moved == move->moved &&
+       moves[i].name == move->name){
          *move = moves[i];
          printf("Valid move!\n");
          return 1;
