@@ -1,6 +1,8 @@
 #if !defined(GLOBAL_H)
 #define GLOBAL_H
 
+#include <stdio.h>
+
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -27,5 +29,6 @@ extern float knight_positions[8][8];
 extern float bishop_positions[8][8];
 extern float rook_positions[8][8];
 extern float queen_positions[8][8];
+extern FILE *fd;
 
 #endif
