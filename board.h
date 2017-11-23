@@ -1,6 +1,8 @@
 #if !defined(BOARD_H)
 #define BOARD_H
 
+#include <stdio.h>
+
 typedef struct{
   char name;
   int row;
@@ -22,9 +24,11 @@ typedef struct{
 board_t * create_board();
 
 void update_board(board_t *board);
-void draw(board_t *board);
+void draw(board_t *board, FILE *stream);
 
 int check(board_t *board, int color);
 
 int place_piece(board_t *board, char name, int row, int col);
+
+int is_draw(board_t *board);
 #endif

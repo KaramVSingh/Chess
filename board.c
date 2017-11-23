@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
 #include "move.h"
@@ -65,50 +64,50 @@ void update_board(board_t *board){
     if(!board->pieces[BLACK][k].taken) board->board[i][j] = board->pieces[BLACK][k].name;
   }
 }
-void draw(board_t * board){
+void draw(board_t * board, FILE *stream){
   int i, j, white, black, white_done, black_done;
   char c;
 
   update_board(board);
 
   black = white = 0;
-  printf(" ___ ___ ___ ___ ___ ___ ___ ___");
-  printf("      White   Black\n");
+  fprintf(stream, " ___ ___ ___ ___ ___ ___ ___ ___");
+  fprintf(stream, "      White   Black\n");
   for(i = 0; i < MAX_ROWS; i++){
     for(j = 0; j < MAX_COLS; j++){
       c = board->board[i][j];
-      printf("| ");
+      fprintf(stream, "| ");
       if(c > 90) {
-        printf(ANSI_COLOR_CYAN "%c " ANSI_COLOR_RESET ,c);
+        fprintf(stream, ANSI_COLOR_CYAN "%c " ANSI_COLOR_RESET ,c);
       } else {
-        printf(ANSI_COLOR_GREEN "%c " ANSI_COLOR_RESET ,c);
+        fprintf(stream, ANSI_COLOR_GREEN "%c " ANSI_COLOR_RESET ,c);
       }
       
     }
-    printf("| %d", 8-i);
+    fprintf(stream, "| %d", 8-i);
     white_done = black_done = 0;
 
     while(white_done < 2 && white < 16){
       if(board->pieces[WHITE][white].taken){
         white_done++;
-        printf(ANSI_COLOR_CYAN "   %c" ANSI_COLOR_RESET , board->pieces[WHITE][white].name);
+        fprintf(stream, ANSI_COLOR_CYAN "   %c" ANSI_COLOR_RESET , board->pieces[WHITE][white].name);
       }
       white++;
     }
     for( ; white_done < 2; white_done++){
-      printf("    ");
+      fprintf(stream, "    ");
     }
     while(black_done < 2 && black < 16){
       if(board->pieces[BLACK][black].taken){
         black_done++;
-        printf(ANSI_COLOR_GREEN "   %c" ANSI_COLOR_RESET, board->pieces[BLACK][black].name);
+        fprintf(stream, ANSI_COLOR_GREEN "   %c" ANSI_COLOR_RESET, board->pieces[BLACK][black].name);
       }
       black++;
     }
-    printf("\n|___|___|___|___|___|___|___|___|\n");
+    fprintf(stream, "\n|___|___|___|___|___|___|___|___|\n");
 
   }
-  printf("  A   B   C   D   E   F   G   H \n");
+  fprintf(stream, "  A   B   C   D   E   F   G   H \n");
 }
 
 int check(board_t *board, int color){
@@ -348,4 +347,53 @@ int place_piece(board_t *board, char name, int row, int col){
   board->pieces[color][i].row = row;
   board->pieces[color][i].col = col;
   return 1;
+}
+
+int is_draw(board_t *board){
+  int i;
+  int color = -1;
+  int white_knights = 0, black_knights = 0;
+  piece_t white, black;
+  for(i = 0; i < 16; i++){
+    white = board->pieces[WHITE][i];
+    black = board->pieces[BLACK][i];
+    if(!white.taken){
+      if(white.name == 'q'){
+        return FALSE;
+      }else if(white.name == 'r'){
+        return FALSE;
+      }else if(white.name == 'n'){
+        if(++white_knights > 1){
+          return FALSE;
+        }
+      }else if(white.name == 'b'){
+        int cell_color = (white.row + white.col) % 2;
+        if(color == -1){
+          color = cell_color;
+        }else if(color != cell_color){
+          return FALSE;
+        }
+      }
+    }
+    if(!black.taken){
+      if(black.name == 'q'){
+        return FALSE;
+      }else if(black.name == 'r'){
+        return FALSE;
+      }else if(black.name == 'n'){
+        if(++black_knights > 1){
+          return FALSE;
+        }
+      }else if(black.name == 'b'){
+        int cell_color = (black.row + black.col) % 2;
+        if(color == -1){
+          color = cell_color;
+        }else if(color != cell_color){
+          return FALSE;
+        }
+      }
+    }
+  }
+  
+  return TRUE;
 }
