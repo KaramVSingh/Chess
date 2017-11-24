@@ -432,6 +432,9 @@ move_t *generate_moves(board_t *board, int color, int *length){
   result = (move_t *) malloc(i*sizeof(move_t));
   for(j = 0; j < i; j++){
     result[j] = moves[j];
+    if(DEBUG){
+      print_move(moves[j]);
+    }
   }
   free(moves);
   moves = NULL;
@@ -628,6 +631,7 @@ move_t create_move(piece_t *moved, piece_t *captured, int src_row, int src_col, 
   move_t move;
 
   move.moved = moved;
+  move.name = 0;
   move.captured = captured;
   move.src_row = src_row;
   move.src_col = src_col;
