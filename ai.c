@@ -167,7 +167,11 @@ int make_move(board_t *board, int difficulty, int color){
   }
 
   if(j == 0){
-    printf("CHECKMATE\n");
+    if(check(board, color)){
+      printf("CHECKMATE\n");
+    }else{
+      printf("STALEMATE\n");
+    }
     return 0;
   }
   i = rand() % j;
