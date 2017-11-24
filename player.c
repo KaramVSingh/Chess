@@ -32,6 +32,14 @@ int move(player_t *player, board_t *board){
 
   if(player->is_human){
     move.children = generate_moves(board, player->piece_type, &move.length);
+    if(move.length == 0){
+      if(check(board, player->piece_type)){
+        printf("CHECKMATE\n");
+      }else{
+        printf("STALEMATE\n");
+      }
+      return 0;
+    }
     do{
       printf("Enter move: ");
       scanf(" %c%d to %c%d", &src_col, &src_row, &dst_col, &dst_row);
