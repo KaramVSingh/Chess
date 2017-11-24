@@ -394,6 +394,19 @@ int is_draw(board_t *board){
       }
     }
   }
+
+  move_history_t *temp = board->head;
+  int count = 0;
+  while(count < 50 && temp != NULL){
+    if(temp->move->captured != NULL){
+      return FALSE;
+    }
+    count++;
+    temp = temp->next_move;
+  }
+  if(count < 50){
+    return FALSE;
+  }
   
   return TRUE;
 }
