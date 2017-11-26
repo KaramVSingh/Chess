@@ -6,13 +6,39 @@
 
 #include "global.h"
 
+#define OPENING 0
+#define MIDGAME 1
+#define ENDGAME 2
+
 float weights[8][8];
 
+int get_mode(board_t *board, int color){
+  int i;
+  float sum = 0.0f;
+  for(i = 1; i < 16; i++){
+    if(!board->pieces[!color][i].taken){
+      sum += board->pieces[!color][i].val;
+    }
+  }
+  if(sum > 12){
+    return MIDGAME;
+  }else{
+    return ENDGAME;
+  }
+}
+
+int available_moves(board_t *board, int color){
+  move_t temp;
+  temp.children = generate_moves(board, !color, &temp.length);
+  free(temp.children);
+
+  return temp.length;
+}
 /*
 Calculates the net material for the color on the board by summing the pieces
 not taken
 */
-float calculate_material(board_t *board, int color){
+float calculate_material(board_t *board){
   int i;
   float result;
 
@@ -29,29 +55,30 @@ float calculate_material(board_t *board, int color){
   return result;
 }
 
-float evaluate_board(board_t *board, int difficulty, int color){
+float evaluate_board(board_t *board, int color){
   float value = 0.0f;
-  //handle checkmate
-  switch(difficulty){
-    case 2:
-    case 1:
-      value += calculate_material(board, color);
-    case 0:
-      break;
+  int mode = get_mode(board, color);
+
+  if(mode == MIDGAME){
+    value = calculate_material(board);  
+  }else if(mode == ENDGAME){
+    value = available_moves(board, color);
   }
+  
+
   return value;
 }
 
-float alphabeta(board_t *board, move_t move, int color, int difficulty, int depth, float alpha, float beta){
+float alphabeta(board_t *board, move_t move, int color, int depth, float alpha, float beta){
   int i;
   float v, new;
 
-  if(depth == 0){
-    return evaluate_board(board, difficulty, !color);
-  }
-
   if(move.length == 0){
     return color? INFINITY: -INFINITY;
+  }
+
+  if(depth == 0){
+    return evaluate_board(board, !color);
   }
 
   if(color){
@@ -59,7 +86,7 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
     for(i = 0; i < move.length; i++){
       move_piece(board, move.children[i], color);
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
-      new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
+      new = alphabeta(board, move.children[i], !color, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
       if(DEBUG){
         printf("Color: %d, v: %1.2f, new: %1.2f, alpha: %1.2f, move: ", color, v, new, alpha);
@@ -83,7 +110,7 @@ float alphabeta(board_t *board, move_t move, int color, int difficulty, int dept
     for(i = 0; i < move.length; i++){
       move_piece(board, move.children[i], color);
       move.children[i].children = generate_moves(board, !color, &move.children[i].length);
-      new = alphabeta(board, move.children[i], !color, difficulty, depth - 1, alpha, beta);
+      new = alphabeta(board, move.children[i], !color, depth - 1, alpha, beta);
       undo_move(board, move.children[i], color);
       if(DEBUG){
         printf("Color: %d, v: %1.2f, new: %1.2f, beta: %1.2f, move: ", color, v, new, beta);
@@ -150,7 +177,7 @@ int make_move(board_t *board, int difficulty, int color){
   depth = difficulty;
 
   parent.children = generate_moves(board, color, &parent.length);
-  temp = alphabeta(board, parent, color, difficulty, depth, alpha, beta);
+  temp = alphabeta(board, parent, color, depth, alpha, beta);
   j = 0;
   for(i = 0; i < parent.length; i++){
     if(parent.children[i].value == temp){
