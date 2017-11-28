@@ -20,7 +20,7 @@ int get_mode(board_t *board, int color){
       sum += board->pieces[!color][i].val;
     }
   }
-  if(sum > 12){
+  if(sum > 9){
     return MIDGAME;
   }else{
     return ENDGAME;
@@ -29,10 +29,10 @@ int get_mode(board_t *board, int color){
 
 int available_moves(board_t *board, int color){
   move_t temp;
-  temp.children = generate_moves(board, !color, &temp.length);
+  temp.children = generate_moves(board, color, &temp.length);
   free(temp.children);
 
-  return temp.length;
+  return color? -temp.length : temp.length;
 }
 /*
 Calculates the net material for the color on the board by summing the pieces
