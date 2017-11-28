@@ -432,9 +432,9 @@ move_t *generate_moves(board_t *board, int color, int *length){
   result = (move_t *) malloc(i*sizeof(move_t));
   for(j = 0; j < i; j++){
     result[j] = moves[j];
-    if(DEBUG){
-      print_move(moves[j]);
-    }
+    //if(DEBUG){
+    //  print_move(moves[j]);
+    //}
   }
   free(moves);
   moves = NULL;
