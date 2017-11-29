@@ -9,22 +9,31 @@
 #define OPENING 0
 #define MIDGAME 1
 #define ENDGAME 2
+#define OFFENSE 8
 
 float weights[8][8];
 
 int get_mode(board_t *board, int color){
   int i;
-  float sum = 0.0f;
+  float self = 0.0f, opponent = 0.0f;
+  int return_val = OPENING;
   for(i = 1; i < 16; i++){
     if(!board->pieces[!color][i].taken){
-      sum += board->pieces[!color][i].val;
+      opponent += board->pieces[!color][i].val;
+    }
+    if(!board->pieces[color][i].taken){
+      self += board->pieces[color][i].val;
     }
   }
-  if(sum > 9){
-    return MIDGAME;
-  }else{
-    return ENDGAME;
+  if(self >= opponent){
+    return_val |= OFFENSE;
   }
+  if(self > 9 && opponent > 9){
+    return_val |= MIDGAME;
+  }else{
+    return_val |= ENDGAME;
+  }
+  return return_val;
 }
 
 int available_moves(board_t *board, int color){
@@ -32,7 +41,7 @@ int available_moves(board_t *board, int color){
   temp.children = generate_moves(board, color, &temp.length);
   free(temp.children);
 
-  return color? -temp.length : temp.length;
+  return color? temp.length : -temp.length;
 }
 /*
 Calculates the net material for the color on the board by summing the pieces
@@ -59,10 +68,14 @@ float evaluate_board(board_t *board, int color){
   float value = 0.0f;
   int mode = get_mode(board, color);
 
-  if(mode == MIDGAME){
+  if(mode & MIDGAME){
     value = calculate_material(board);  
-  }else if(mode == ENDGAME){
-    value = available_moves(board, color);
+  }else if(mode & ENDGAME){
+    if(mode & OFFENSE){
+      value += available_moves(board, !color);
+    }else{
+      value += available_moves(board, color);
+    }
   }
   
 
@@ -78,7 +91,7 @@ float alphabeta(board_t *board, move_t move, int color, int depth, float alpha, 
   }
 
   if(depth == 0){
-    return evaluate_board(board, !color);
+    return evaluate_board(board, color);
   }
 
   if(color){
