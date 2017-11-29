@@ -400,6 +400,8 @@ int is_draw(board_t *board){
   while(count < 50 && temp != NULL){
     if(temp->move->captured != NULL){
       return FALSE;
+    }else if(temp->move->moved->name == 'p' || temp->move->moved->name == 'P'){
+      return FALSE;
     }
     count++;
     temp = temp->next_move;
