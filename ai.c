@@ -87,7 +87,7 @@ float alphabeta(board_t *board, move_t move, int color, int depth, float alpha, 
   float v, new;
 
   if(move.length == 0){
-    return color? INFINITY: -INFINITY;
+    return color? -INFINITY: INFINITY;
   }
 
   if(depth == 0){
